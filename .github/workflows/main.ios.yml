@@ -1,0 +1,98 @@
+name: Build, Test and Distribute iOS
+
+on:
+  push:
+    branches: [master, develop]
+
+env:
+  flutter_version: '1.20.3'
+  java_version: '12.x'
+
+jobs:
+  test:
+    name: Run Unit Tests
+    runs-on: macOS-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.6'
+
+      # Caches
+      - name: Cache Flutter dependencies
+        uses: actions/cache@v1
+        with:
+          path: /opt/hostedtoolcache/flutter
+          key: ${{ runner.OS }}-flutter-install-cache-${{ env.flutter_version }}
+      - uses: subosito/flutter-action@v1
+        with:
+          flutter-version: ${{ env.flutter_version }}
+
+      # Commands
+      - run: flutter pub get
+      - run: flutter test
+
+  distibute:
+    name: Build and Deploy iOS
+    needs: test
+    runs-on: macOS-latest
+
+    steps:
+      # Actions
+      - uses: webfactory/ssh-agent@v0.4.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.6'
+      - uses: subosito/flutter-action@v1
+        with:
+          flutter-version: ${{ env.flutter_version }}
+
+      # Cache
+      - name: Cache Pub (Flutter dependencies)
+        uses: actions/cache@v1
+        with:
+          path: /opt/hostedtoolcache/flutter
+          key: ${{ runner.OS }}-flutter-install-cache-${{ env.flutter_version }}
+
+      - name: Cache Gems
+        uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+
+      # Commands
+      - run: flutter pub get
+
+      - name: install bundler
+        run: gem install bundler
+
+      - name: Install Gems
+        run: |
+          bundle config path vendor/bundle
+          bundle install
+
+      - name: Bootstrap iOS
+        run: bundle exec fastlane ios bootstrap
+
+      - name: Build Project
+        run: bundle exec fastlane ios build
+
+      - name: Deploy to Firebase
+        run: bundle exec fastlane ios alpha
+
+    # ENVS Distribute JOB
+    env:
+      FIREBASE_CLI_TOKEN: ${{ secrets.FIREBASE_CLI_TOKEN }}
+      FIREBASE_ANDROID_APP_ID: ${{ secrets.FIREBASE_IOS_APP_ID }}
+      MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+      FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
+      FASTLANE_SESSION: ${{ secrets.FASTLANE_SESSION }}
+      FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+      MATCH_KEYCHAIN_PASSWORD: ${{ secrets.MATCH_KEYCHAIN_PASSWORD }}
+      BUNDLE_: ${{ secrets.MATCH_KEYCHAIN_PASSWORD }}

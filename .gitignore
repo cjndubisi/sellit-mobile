@@ -15,6 +15,10 @@
 *.iws
 .idea/
 
+
+# Andoroid
+**/android/local.properties
+
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
@@ -27,6 +31,7 @@
 .flutter-plugins
 .flutter-plugins-dependencies
 .packages
+.env
 .pub-cache/
 .pub/
 /build/
@@ -42,3 +47,12 @@ app.*.map.json
 
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+
+# iOS & Xcode
+fastlane/report.xml
+*.ipa
+*.app.*
+Pods/
+
+# Ruby
+vendor

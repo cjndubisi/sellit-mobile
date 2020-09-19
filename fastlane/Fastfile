@@ -1,0 +1,127 @@
+
+fastlane_version '2.159.0'
+skip_docs
+
+platform :ios do
+  private_lane :bundle_id_for_branch do
+    'com.example.flutterStarterkitFirebase'
+  end
+
+  private_lane :options_for_branch do | options |
+    identifier = "com.example.flutterStarterkitFirebase"
+    {
+      app_identifier: identifier,
+      export_type: git_branch == 'master' ? 'app-store' : 'ad-hoc',
+      match_type: git_branch == 'master' ? 'appstore' : 'adhoc',
+      match_profile_name: git_branch == 'master' ? "match AppStore #{identifier}" : "match AdHoc #{identifier}"
+    }
+  end
+
+  desc 'Fetch certificates and provisioning profiles'
+  lane :certificates do
+    branch_name =  'flutter-starterkit-firebase'
+    match(verbose: is_ci?, type: 'development', readonly: false, git_branch: branch_name) unless is_ci?
+    match(verbose: is_ci?, type: 'adhoc', readonly: is_ci?, clone_branch_directly: true, git_branch: branch_name) unless git_branch == 'master'
+    match(verbose: is_ci?, type: 'appstore',readonly: is_ci?, clone_branch_directly: true, git_branch: branch_name) if git_branch == 'master'
+  end
+
+  desc 'Build the iOS application.'
+  lane :bootstrap do
+    clear_derived_data
+    cocoapods(
+      podfile: './ios/Podfile',
+      repo_update: is_ci?,
+      use_bundle_exec: true,
+    )
+
+    setup_ci
+
+    certificates
+  end
+
+  desc 'Build the iOS application.'
+  lane :build do
+    ensure_git_status_clean(show_uncommitted_changes: true)
+
+    options = options_for_branch
+
+    increment_build_number(xcodeproj: './ios/Runner.xcodeproj')
+
+    # Required to build dart for gym
+    sh 'flutter build ios --release --no-codesign'
+
+    gym(
+      scheme: 'Runner',
+      workspace: './ios/Runner.xcworkspace',
+      configuration: 'Release',
+      clean: true,
+      export_method: options[:export_type],
+      export_options: {
+        method: options[:export_type],
+        provisioningProfiles: { 
+          bundle_id_for_branch => options[:match_profile_name]
+        }
+      }
+    )
+  end
+
+  lane :alpha do 
+    firebase_app_distribution(
+      app: ENV["FIREBASE_IOS_APP_ID"],
+      firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"],
+      firebase_cli_path: "/usr/local/bin/firebase",
+      ipa_path: "/Runner.ipa"
+    )
+
+    git_commit(path: ['ios/Runner/Info.plist, ios/Runner.xcodeproj/project.pbxproj'], message: '[skip ci] Bump iOS version bump')
+    
+    push_to_git_remote(
+      remote_branch: git_branch,
+      tags: false
+    )
+  end 
+
+end
+
+
+platform :android do
+  # Android Lanes
+
+  desc 'Build the Flutter application.'
+  private_lane :build do
+    # increment_build_number
+    # gradle(task: 'incrementVersionCode', project_dir: 'android/')
+    
+    sh("flutter", "clean")
+    # sh("flutter", "build", "appbundle")
+    sh("flutter build apk --release")
+  end
+
+  desc 'Ship to FireBase App Distribution'
+  lane :alpha do
+    build
+
+    firebase_app_distribution(
+      app: ENV["FIREBASE_ANDROID_APP_ID"],
+      firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"],
+      release_notes: "This is a test app",
+      firebase_cli_path: "/usr/local/bin/firebase",
+      apk_path: "./build/app/outputs/flutter-apk/app-release.apk"
+    )
+
+    git_commit(path: ['./android/gradle.properties'], message: '[skip ci] Bump Android version bump')
+
+    push_to_git_remote(
+      remote_branch: git_branch,
+      tags: false
+    )
+  end
+
+  # lane :build_keystore do 
+  #   sh 'echo $RELEASE_KEY_STORE | base64 -d > ../android/app/wanted-android-releasekey.keystore'
+  #   sh 'echo \'APP_RELEASE_STORE_FILE=wanted-android-releasekey.keystore\' >> ../android/signing.properties'
+  #   sh 'echo \'APP_RELEASE_KEY_ALIAS=$RELEASE_KEYSTORE_KEY_ALIAS\' >> ../android/signing.properties'
+  #   sh 'echo \'APP_RELEASE_STORE_PASSWORD=$RELEASE_KEYSTORE_STORE_PASSWORD\' >> ../android/signing.properties'
+  #   sh 'echo \'APP_RELEASE_KEY_PASSWORD=$RELEASE_KEYSTORE_KEY_PASSWORD\' >> ../android/signing.properties'
+  # end
+end
