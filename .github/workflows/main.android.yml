@@ -10,6 +10,7 @@ env:
 
 jobs:
   distibute:
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
     name: Run Unit Tests,Build And Deploy APK With Fastlane
     runs-on: ubuntu-latest
 
