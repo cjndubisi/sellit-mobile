@@ -73,7 +73,7 @@ platform :ios do
       ipa_path: "Runner.ipa"
     )
 
-    git_commit(path: ['ios/Runner/Info.plist, ios/Runner.xcodeproj/project.pbxproj'], message: '[skip ci] Bump iOS version bump')
+    git_commit(path: ['./ios/Runner/Info.plist, ./ios/Runner.xcodeproj/project.pbxproj'], message: '[skip ci] Bump iOS version bump')
     
     push_to_git_remote(
       remote_branch: git_branch,
