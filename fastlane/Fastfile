@@ -70,7 +70,7 @@ platform :ios do
       app: ENV["FIREBASE_IOS_APP_ID"],
       firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"],
       firebase_cli_path: "/usr/local/bin/firebase",
-      ipa_path: "/Runner.ipa"
+      ipa_path: "Runner.ipa"
     )
 
     git_commit(path: ['ios/Runner/Info.plist, ios/Runner.xcodeproj/project.pbxproj'], message: '[skip ci] Bump iOS version bump')
