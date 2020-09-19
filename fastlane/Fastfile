@@ -109,12 +109,13 @@ platform :android do
       apk_path: "./build/app/outputs/flutter-apk/app-release.apk"
     )
 
-    git_commit(path: ['./android/gradle.properties'], message: '[skip ci] Bump Android version bump')
+    # Fix version bump
+    # git_commit(path: ['./android/gradle.properties'], message: '[skip ci] Bump Android version bump')
 
-    push_to_git_remote(
-      remote_branch: git_branch,
-      tags: false
-    )
+    # push_to_git_remote(
+    #   remote_branch: git_branch,
+    #   tags: false
+    # )
   end
 
   # lane :build_keystore do 
