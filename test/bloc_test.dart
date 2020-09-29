@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_starterkit_firebase/authentication/authentication_bloc/authentication_bloc.dart';
 import 'package:flutter_starterkit_firebase/core/auth_service.dart';
 import 'package:flutter_starterkit_firebase/utils/constants.dart';
+import 'package:flutter_starterkit_firebase/core/firebase_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,9 +21,11 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   AuthenticationBloc authenticationBloc;
   AuthService _authService;
+  FirebaseAuthServiceMock firebaseServiceMock;
 
   setUp(() {
-    _authService = AuthService(firebase: firebaseAuthMock, google: googleSignInMock, facebook: facebookSignInMock);
+    firebaseServiceMock = FirebaseAuthServiceMock();
+    _authService = AuthService.fromFirebaseService(firebaseServiceMock);
     authenticationBloc = AuthenticationBloc(service: _authService);
     SharedPreferences.setMockInitialValues(<String, dynamic>{Constants.FIRST_TIME: false});
   });
@@ -37,7 +40,7 @@ void main() {
     });
 
     test('validate user signed in at app started', () {
-      when(_authService.isSignedIn()).thenAnswer((_) => FirebaseUserMock());
+      when(firebaseServiceMock.getCurrentUser()).thenAnswer((_) => FirebaseUserMock());
 
       expectLater(
         authenticationBloc,
@@ -48,8 +51,8 @@ void main() {
     });
 
     test('successful login with email and password', () {
-      when(_authService.verifyUser('adex9ja2@gmail.com', '1111'))
-          .thenAnswer((_) => Future<FirebaseMockAuthResult>.value(firebaseMockAuthResult));
+      when(firebaseServiceMock.signInWithEmailPassword('adex9ja2@gmail.com', '1111'))
+          .thenAnswer((_) => Future.value(firebaseMockAuthResult));
 
       expectLater(
         authenticationBloc,
@@ -60,7 +63,7 @@ void main() {
     });
 
     test('failed login with email / password', () {
-      when(_authService.verifyUser('adex9ja2@gmail.com', '1111'))
+      when(firebaseServiceMock.signInWithEmailPassword('adex9ja2@gmail.com', '1111'))
           .thenAnswer((_) => Future.value(firebaseMockAuthResult));
 
       expectLater(
@@ -71,8 +74,21 @@ void main() {
       authenticationBloc.add(LoginWithEmailPasswordPressed(email: 'adex9ja2@gmail.com', password: '1234'));
     });
 
+    test('successful user registration', () {
+      when(firebaseServiceMock.registerNewUser('adex9ja2@gmail.com', '1111'))
+          .thenAnswer((_) => Future.value(firebaseMockAuthResult));
+
+      expectLater(
+        authenticationBloc,
+        emitsInOrder(<AuthenticationState>[Loading(), Successful()]),
+      );
+
+      authenticationBloc.add(SubmitRegistrationPressed(
+          email: 'adex9ja2@gmail.com', password: '1111', phonenumber: '08166767271', fullname: 'Adeyemo Adeolu'));
+    });
+
     test('validate sign out', () {
-      when(_authService.signOut()).thenAnswer((_) => Future<Duration>.delayed(Duration.zero));
+      when(firebaseServiceMock.signOut()).thenAnswer((_) => Future.delayed(Duration.zero));
 
       expectLater(
         authenticationBloc,

@@ -6,6 +6,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import 'firebase_service.dart';
 
+import '../main.dart';
+
 class AuthService {
   AuthService({
     FirebaseAuth firebase,
@@ -13,8 +15,8 @@ class AuthService {
     GoogleSignIn google,
   }) : _auth = FirebaseService(
           firebaseAuth: firebase,
-          facebookService: facebook,
-          googleService: google,
+          facebookSignIn: facebook,
+          googleSignIn: google,
         );
 
   AuthService.fromFirebaseService(FirebaseService auth)
@@ -29,11 +31,15 @@ class AuthService {
     return await _auth.signOut();
   }
 
-  User isSignedIn() {
+  User getUser() {
     return _auth.getCurrentUser();
   }
 
-  Future<UserCredential> faceBookSignIn() async {
+  bool isSignedIn() {
+    return getUser() != null;
+  }
+
+  Future<UserCredential> facebookSignIn() async {
     try {
       final UserCredential response = await _auth.facebookSignIn();
       return response;
@@ -60,8 +66,14 @@ class AuthService {
     }
   }
 
-  Future<void> forgotPassword(String email) async {
-    await _auth.forgotPassword(email);
+  Future<UserCredential> registerUser(String email, String password, String fullName, String phoneno) async {
+    try {
+      final UserCredential user = await _auth.registerNewUser(email, password);
+      // TODO(handleRegisteredUser): Grab the returned user and send to server/save to FireStore
+      return user;
+    } on Exception catch (e) {
+      return throw CustomException(e.toString());
+    }
   }
 }
 

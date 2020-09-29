@@ -3,10 +3,10 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class FirebaseService {
-  FirebaseService({FirebaseAuth firebaseAuth, FacebookLogin facebookService, GoogleSignIn googleService})
+  FirebaseService({FirebaseAuth firebaseAuth, FacebookLogin facebookSignIn, GoogleSignIn googleSignIn})
       : _auth = firebaseAuth ?? FirebaseAuth.instance,
-        _facebookLogin = facebookService ?? FacebookLogin(),
-        _googleSignIn = googleService ?? GoogleSignIn();
+        _facebookLogin = facebookSignIn ?? FacebookLogin(),
+        _googleSignIn = googleSignIn ?? GoogleSignIn();
 
   final FirebaseAuth _auth;
   final FacebookLogin _facebookLogin;
@@ -32,6 +32,10 @@ class FirebaseService {
     return await _auth?.signInWithEmailAndPassword(email: email, password: password);
   }
 
+  Future<UserCredential> registerNewUser(String email, String password) async {
+    return await _auth?.createUserWithEmailAndPassword(email: email, password: password);
+  }
+
   Future<UserCredential> facebookSignIn() async {
     final FacebookLoginResult result = await _facebookLogin.logIn(['email']);
     if (result?.status == FacebookLoginStatus.loggedIn) {
@@ -50,6 +54,6 @@ class FirebaseService {
   }
 
   Future<void> forgotPassword(String email) async {
-    return await _auth?.sendPasswordResetEmail(email: email);
+    return await _auth.sendPasswordResetEmail(email: email);
   }
 }
