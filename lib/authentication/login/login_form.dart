@@ -94,6 +94,13 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                 ),
                 fabSize,
+                FlatButton(
+                    onPressed: () => navigateTo('/forgot_password', null, true),
+                    child: Text(
+                      "Forgot password?",
+                      style: style.copyWith(decoration: TextDecoration.underline, color: colorBlue),
+                    )),
+                fabSize,
                 Center(
                   child: Row(
                     mainAxisSize: MainAxisSize.min,

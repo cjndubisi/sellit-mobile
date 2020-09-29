@@ -32,16 +32,18 @@ class MyApp extends StatelessWidget {
         title: 'SellIt',
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           builder: (BuildContext context, AuthenticationState state) {
-            if (state is UnInitialized)
-              return WelcomeActivity();
-            else if (state is UnAuthenticated)
-              return LoginScreen(
-                service: _authService,
-              );
-            else
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+            switch (state.runtimeType) {
+              case UnInitialized:
+                return WelcomeActivity();
+              case UnAuthenticated:
+                return LoginScreen(
+                  service: _authService,
+                );
+              default:
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+            }
           },
         ),
         routes: {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_starterkit_firebase/utils/repository.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class WelcomeActivity extends StatelessWidget {
   @override

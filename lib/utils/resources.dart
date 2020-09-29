@@ -17,6 +17,7 @@ const Color colorBlue = Color(0xff3f7cac);
 const Color colorYellow = Color(0xffffda22);
 const Color colorLightPink = Color(0xffd87cac);
 
+
 //Sizes
 const SizedBox smallSize = SizedBox(
   height: 5.0,

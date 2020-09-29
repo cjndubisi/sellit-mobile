@@ -2,10 +2,9 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_starterkit_firebase/core/auth_service.dart';
 import 'package:flutter_starterkit_firebase/utils/repository.dart';
 import 'package:meta/meta.dart';
-
-import '../../core/auth_service.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
@@ -43,7 +42,16 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       yield* _mapLoginWithEmailPassEvent(event.email, event.password);
     } else if (event is SubmitRegistrationPressed) {
       yield* _mapRegisterUser(event.email, event.fullname, event.phonenumber, event.password);
+    } else if (event is LoginWithGooglePressed) {
+      yield* _mapLoginWithGoogleEvent();
+    } else if (event is LoginWithFaceBookPressed) {
+      yield* _mapLoginWithFaceBookPressedToState();
+    } else if (event is LoginWithEmailPasswordPressed) {
+      yield* _mapLoginWithEmailPassEvent(event.email, event.password);
+    } else if (event is SubmitRegistrationPressed) {
+      yield* _mapRegisterUser(event.email, event.fullname, event.phonenumber, event.password);
     }
+
   }
 
   Stream<AuthenticationState> _mapAppStartedToState() async* {
@@ -112,7 +120,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       String email, String fullname, String phonenumber, String password) async* {
     try {
       yield Loading();
-      final UserCredential credential = await _service.registerUser(email, password, fullname, phonenumber);
+      final UserCredential credential = await _service.verifyUser(email, password);
       if (credential != null)
         yield Successful();
       else
@@ -121,4 +129,5 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       yield Failed(message: e.cause);
     }
   }
+
 }

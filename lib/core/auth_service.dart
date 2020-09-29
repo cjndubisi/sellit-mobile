@@ -6,8 +6,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import 'firebase_service.dart';
 
-import '../main.dart';
-
 class AuthService {
   AuthService({
     FirebaseAuth firebase,

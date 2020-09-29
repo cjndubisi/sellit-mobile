@@ -17,9 +17,9 @@ class LoginWithGooglePressed extends AuthenticationEvent {}
 class LoginWithFaceBookPressed extends AuthenticationEvent {}
 
 class LoginWithEmailPasswordPressed extends AuthenticationEvent {
-  LoginWithEmailPasswordPressed({this.email, this.password});
   final String email;
   final String password;
+  LoginWithEmailPasswordPressed({this.email, this.password});
 }
 
 class SubmitRegistrationPressed extends AuthenticationEvent {

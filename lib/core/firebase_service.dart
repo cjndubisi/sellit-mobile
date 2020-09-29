@@ -15,9 +15,7 @@ class FirebaseService {
   FirebaseAuth get instance => _auth;
 
   Future<void> signOut() async {
-    await _auth.signOut();
-    await _facebookLogin.logOut();
-    await _facebookLogin.logOut();
+    return Future.wait([_auth.signOut(), _facebookLogin.logOut(), _facebookLogin.logOut()]);
   }
 
   User getCurrentUser() {
