@@ -53,6 +53,8 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+
+
 }
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -134,8 +136,10 @@ void showMessageWithDialog(String message, BuildContext context, [VoidCallback b
 }
 
 Future<void> loadingFailed(String message) async {
-  if (_progressDialog != null) await _progressDialog.hide();
-  if (message != null) toastError(message);
+  if (_progressDialog != null)
+    await _progressDialog.hide();
+  if (message != null)
+    toastError(message);
 }
 
 void toastSuccess(String message) {
@@ -160,6 +164,15 @@ void toastInfo(String message) {
 void toastError(String message) {
   Fluttertoast.showToast(
       msg: message ?? '',
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.red,
+      textColor: Colors.white);
+}
+
+void toastError(String message) {
+  Fluttertoast.showToast(
+      msg: message == null ? '' : message,
       toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.BOTTOM,
       backgroundColor: Colors.red,
