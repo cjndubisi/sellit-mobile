@@ -5,12 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starterkit_firebase/utils/resources.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-
-import 'authentication/auth_service.dart';
 import 'authentication/authentication_bloc/authentication_bloc.dart';
+import 'authentication/login/login_screen.dart';
 import 'authentication/onboarding/onboarding_screen.dart';
+import 'core/auth_service.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
+    return BlocProvider<AuthenticationBloc>(
       create: (_) => AuthenticationBloc(service: _authService)..add(AppStarted()),
       child: MaterialApp(
         theme: ThemeData(
@@ -31,16 +31,22 @@ class MyApp extends StatelessWidget {
         ),
         title: 'SellIt',
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-          builder: (context, state) {
-            if (state is Uninitalized) {
+          builder: (BuildContext context, AuthenticationState state) {
+            if (state is UnInitialized)
               return WelcomeActivity();
-            }
-            if (state is Authenticated) {
-              //return ListingScreen();
-            }
-            return WelcomeActivity();
+            else if (state is UnAuthenticated)
+              return LoginScreen(
+                service: _authService,
+              );
+            else
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
           },
         ),
+        routes: {
+          '/login': (BuildContext context) => LoginScreen(service: _authService),
+        },
         navigatorKey: navigatorKey,
       ),
     );
@@ -58,7 +64,7 @@ Future<dynamic> navigateTo(String routeName, [dynamic request, bool addToBackSta
 
 ProgressDialog _progressDialog;
 
-Future<void> startLoading(BuildContext context, [String message = "Please wait..."]) async {
+Future<void> startLoading(BuildContext context, [String message = 'Please wait...']) async {
   if (_progressDialog != null && _progressDialog.isShowing()) _progressDialog.hide();
   _progressDialog = ProgressDialog(
     context,
@@ -74,7 +80,7 @@ void updateLoading(BuildContext context, String message) {
 
 void loadingSuccessful(String message, [bool showDialog = false, BuildContext context, VoidCallback btnClicked]) {
   if (_progressDialog != null && _progressDialog.isShowing())
-    _progressDialog.hide().then((isHidden) {
+    _progressDialog.hide().then((bool isHidden) {
       if (message != null) {
         if (showDialog)
           showMessageWithDialog(message, context, btnClicked);
@@ -85,20 +91,21 @@ void loadingSuccessful(String message, [bool showDialog = false, BuildContext co
 }
 
 void showMessageWithDialog(String message, BuildContext context, [VoidCallback btnClicked]) {
-  showDialog(
+  showDialog<Widget>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32))),
           title: Row(
+            // ignore: prefer_const_literals_to_create_immutables
             children: <Widget>[
-              Icon(
+              const Icon(
                 Icons.info,
                 color: colorPrimary,
               ),
-              VerticalDivider(),
-              Text(
-                "Message",
+              const VerticalDivider(),
+              const Text(
+                'Message',
                 style: style,
               )
             ],
@@ -114,7 +121,7 @@ void showMessageWithDialog(String message, BuildContext context, [VoidCallback b
                 if (btnClicked != null) btnClicked.call();
               },
               child: Text(
-                "Okay",
+                'Okay',
                 style: style.copyWith(color: colorWhite),
               ),
               color: colorPrimary,
@@ -131,7 +138,7 @@ Future<void> loadingFailed(String message) async {
 
 void toastSuccess(String message) {
   Fluttertoast.showToast(
-      msg: message == null ? '' : message,
+      msg: message ?? '',
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
       backgroundColor: Colors.green,
@@ -140,7 +147,7 @@ void toastSuccess(String message) {
 
 void toastInfo(String message) {
   Fluttertoast.showToast(
-    msg: message == null ? '' : message,
+    msg: message ?? '',
     toastLength: Toast.LENGTH_LONG,
     gravity: ToastGravity.BOTTOM,
     backgroundColor: Colors.blue,
@@ -150,7 +157,7 @@ void toastInfo(String message) {
 
 void toastError(String message) {
   Fluttertoast.showToast(
-      msg: message == null ? '' : message,
+      msg: message ?? '',
       toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.BOTTOM,
       backgroundColor: Colors.red,

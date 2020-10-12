@@ -1,21 +1,21 @@
 //Styles
 import 'package:flutter/material.dart';
 
-final TextStyle style = TextStyle(fontSize: 17.0);
-final TextStyle style2 = TextStyle(color: colorWhite);
+const TextStyle style = TextStyle(fontSize: 17.0);
+const TextStyle style2 = TextStyle(color: colorWhite);
 
 //Colors
-final Color colorPrimary = Color(0xff019d3c);
-final Color colorPrimaryDark = Color(0xff014f1e);
-final Color colorPrimaryLight = Color(0xff67c48a);
-final Color colorRed = Color(0xffe63946);
-final Color colorWhite = Colors.white;
-final Color colorLightGrey = Color(0xfff7f9f7);
-final Color colorGrey = Colors.grey;
-final Color colorBlack = Color(0xff111111);
-final Color colorBlue = Color(0xff3f7cac);
-final Color colorYellow = Color(0xffffda22);
-final Color colorLightPink = Color(0xffd87cac);
+const Color colorPrimary = Color(0xff019d3c);
+const Color colorPrimaryDark = Color(0xff014f1e);
+const Color colorPrimaryLight = Color(0xff67c48a);
+const Color colorRed = Color(0xffe63946);
+const Color colorWhite = Colors.white;
+const Color colorLightGrey = Color(0xfff7f9f7);
+const Color colorGrey = Colors.grey;
+const Color colorBlack = Color(0xff111111);
+const Color colorBlue = Color(0xff3f7cac);
+const Color colorYellow = Color(0xffffda22);
+const Color colorLightPink = Color(0xffd87cac);
 
 //Widget
 final Widget stickyInternetWidget = Container(
@@ -23,27 +23,27 @@ final Widget stickyInternetWidget = Container(
   padding: smallSpacing,
   color: colorRed,
   child: Text(
-    "Internet connection error...Please check your network",
+    'Internet connection error...Please check your network',
     style: style.copyWith(color: colorWhite),
   ),
 );
 
 //Sizes
-final SizedBox smallSize = SizedBox(
+const SizedBox smallSize = SizedBox(
   height: 5.0,
 );
-final SizedBox mediumSize = SizedBox(
+const SizedBox mediumSize = SizedBox(
   height: 10.0,
 );
-final SizedBox fabSize = SizedBox(
+const SizedBox fabSize = SizedBox(
   height: 16.0,
 );
-final SizedBox bigSize = SizedBox(
+const SizedBox bigSize = SizedBox(
   height: 20.0,
 );
 
-//Paddings
-final EdgeInsets smallSpacing = EdgeInsets.all(5);
-final EdgeInsets mediumSpacing = EdgeInsets.all(10);
-final EdgeInsets fabSpacing = EdgeInsets.all(16);
-final EdgeInsets bigSpacing = EdgeInsets.all(20);
+//Padding
+const EdgeInsets smallSpacing = EdgeInsets.all(5);
+const EdgeInsets mediumSpacing = EdgeInsets.all(10);
+const EdgeInsets fabSpacing = EdgeInsets.all(16);
+const EdgeInsets bigSpacing = EdgeInsets.all(20);
