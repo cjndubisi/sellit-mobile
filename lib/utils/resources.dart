@@ -17,17 +17,6 @@ const Color colorBlue = Color(0xff3f7cac);
 const Color colorYellow = Color(0xffffda22);
 const Color colorLightPink = Color(0xffd87cac);
 
-//Widget
-final Widget stickyInternetWidget = Container(
-  alignment: Alignment.topCenter,
-  padding: smallSpacing,
-  color: colorRed,
-  child: Text(
-    'Internet connection error...Please check your network',
-    style: style.copyWith(color: colorWhite),
-  ),
-);
-
 //Sizes
 const SizedBox smallSize = SizedBox(
   height: 5.0,

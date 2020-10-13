@@ -21,3 +21,12 @@ class LoginWithEmailPasswordPressed extends AuthenticationEvent {
   final String email;
   final String password;
 }
+
+class SubmitRegistrationPressed extends AuthenticationEvent {
+  SubmitRegistrationPressed({this.email, this.fullname, this.phonenumber, this.password});
+
+  final String email;
+  final String fullname;
+  final String phonenumber;
+  final String password;
+}

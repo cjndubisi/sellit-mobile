@@ -18,13 +18,11 @@ class AuthCredentialMock extends Mock implements AuthCredential {
 }
 
 class FirebaseMockAuthResult extends Mock implements UserCredential {
-  @override
-  String get displayName => "Adeyemo Adeolu";
+  String get displayName => 'Adeyemo Adeolu';
 
   @override
   AuthCredential get credential => AuthCredentialMock();
 
-  @override
   String get email => 'adex9ja2@gmail.com';
 }
 
@@ -36,7 +34,7 @@ class FirebaseUserMock extends Mock implements User {
   String get email => 'adex9ja2@gmail.com';
 }
 
-class GoogleUserMock extends Mock implements GoogleSignInAccount {
+class GoogleUserMock extends Mock implements GoogleSignInAccount, UserCredential {
   @override
   String get displayName => 'Adeyemo Adeolu';
 

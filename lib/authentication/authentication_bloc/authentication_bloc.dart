@@ -41,6 +41,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       yield* _mapLoginWithFaceBookPressedToState();
     } else if (event is LoginWithEmailPasswordPressed) {
       yield* _mapLoginWithEmailPassEvent(event.email, event.password);
+    } else if (event is SubmitRegistrationPressed) {
+      yield* _mapRegisterUser(event.email, event.fullname, event.phonenumber, event.password);
     }
   }
 
@@ -48,14 +50,16 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     final bool isFirstTime = await Repository.getInstance().isFirstTime();
     if (isFirstTime) {
       yield UnInitialized();
-    } else {
-      final User user = _service.isSignedIn();
-      if (user != null) {
-        yield Authenticated();
-      } else {
-        yield UnAuthenticated();
-      }
+      return;
     }
+
+    final User user = _service.getUser();
+
+    if (user == null) {
+      yield UnAuthenticated();
+      return;
+    }
+    yield Authenticated();
   }
 
   Stream<AuthenticationState> _mapLoggedInToState() async* {
@@ -71,10 +75,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     try {
       yield Loading();
       final UserCredential credential = await _service.googleSignIn();
-      if (credential != null)
-        yield Successful();
-      else
-        yield const Failed(message: 'Google sign in fails');
+
+      yield Successful();
     } on CustomException catch (e) {
       yield Failed(message: e.cause);
     }
@@ -83,7 +85,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   Stream<AuthenticationState> _mapLoginWithFaceBookPressedToState() async* {
     try {
       yield Loading();
-      final UserCredential credential = await _service.faceBookSignIn();
+      final UserCredential credential = await _service.facebookSignIn();
       if (credential != null)
         yield Successful();
       else
@@ -97,6 +99,20 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     try {
       yield Loading();
       final UserCredential credential = await _service.verifyUser(email, password);
+      if (credential != null)
+        yield Successful();
+      else
+        yield const Failed(message: 'Incorrect email or password!');
+    } on CustomException catch (e) {
+      yield Failed(message: e.cause);
+    }
+  }
+
+  Stream<AuthenticationState> _mapRegisterUser(
+      String email, String fullname, String phonenumber, String password) async* {
+    try {
+      yield Loading();
+      final UserCredential credential = await _service.registerUser(email, password, fullname, phonenumber);
       if (credential != null)
         yield Successful();
       else

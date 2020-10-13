@@ -112,7 +112,7 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                 ),
                 fabSize,
-                Center(
+                const Center(
                   child: Text(
                     'Or',
                     style: style,
