@@ -25,3 +25,4 @@ class Failed extends AuthenticationState {
   @override
   List<Object> get props => <Object>[message];
 }
+

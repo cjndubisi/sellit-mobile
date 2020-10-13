@@ -132,4 +132,14 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       yield Failed(message: e.cause);
     }
   }
+
+  Stream<AuthenticationState> _mapForgotPassword(String email) async* {
+    try {
+      yield Loading();
+      _service.forgotPassword(email);
+      yield Successful();
+    } on CustomException catch (e) {
+      yield Failed(message: e.cause);
+    }
+  }
 }

@@ -73,6 +73,10 @@ class AuthService {
       return throw CustomException(e.toString());
     }
   }
+
+  Future<void> forgotPassword(String email) async {
+    await _auth.forgotPassword(email);
+  }
 }
 
 class CustomException implements Exception {
