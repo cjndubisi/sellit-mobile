@@ -87,6 +87,19 @@ void main() {
           email: 'adex9ja2@gmail.com', password: '1111', phonenumber: '08166767271', fullname: 'Adeyemo Adeolu'));
     });
 
+    test('successful user registration', () {
+
+     when(_authService.registerUser('adex9ja2@gmail.com', '1111', 'Adeyemo Adeolu', '08166767271')).thenAnswer((_) => Future.value(firebaseMockAuthResult));
+
+     expectLater(
+       authenticationBloc,
+       emitsInOrder(<AuthenticationState>[Loading(), Successful()]),
+     );
+
+     authenticationBloc.add(SubmitRegistrationPressed(email: 'adex9ja2@gmail.com', password: '1111', phonenumber: '08166767271', fullname: 'Adeyemo Adeolu'));
+
+   });
+
     test('validate sign out', () {
       when(firebaseServiceMock.signOut()).thenAnswer((_) => Future.delayed(Duration.zero));
 
