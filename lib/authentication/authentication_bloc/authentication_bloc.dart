@@ -51,7 +51,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     } else if (event is SubmitRegistrationPressed) {
       yield* _mapRegisterUser(event.email, event.fullname, event.phonenumber, event.password);
     }
-
   }
 
   Stream<AuthenticationState> _mapAppStartedToState() async* {
@@ -135,11 +134,11 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   }
 
   Stream<AuthenticationState> _mapForgotPassword(String email) async* {
-    try{
+    try {
       yield Loading();
       _service.forgotPassword(email);
       yield Successful();
-    } on CustomException catch(e){
+    } on CustomException catch (e) {
       yield Failed(message: e.cause);
     }
   }

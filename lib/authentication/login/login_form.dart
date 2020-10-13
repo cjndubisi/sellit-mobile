@@ -92,17 +92,14 @@ class _LoginFormState extends State<LoginForm> {
                       style: style.copyWith(color: Colors.white, fontSize: 14),
                     ),
                   ),
-                  onSaved: (String value) => _password = value.trim(),
-                  keyboardType: TextInputType.text,
-                  obscureText: true,
-                  validator: (String value) => value.isEmpty ?  'Password can\'t be empty' : null,
                 ),
                 fabSize,
                 FlatButton(
                     onPressed: () => navigateTo('/forgot_password', null, true),
-                    child: Text('Forgot password?',
-                      style: style.copyWith(decoration: TextDecoration.underline, color: colorBlue),)
-                ),
+                    child: Text(
+                      'Forgot password?',
+                      style: style.copyWith(decoration: TextDecoration.underline, color: colorBlue),
+                    )),
                 fabSize,
                 FlatButton(
                     onPressed: () => navigateTo('/forgot_password', null, true),
