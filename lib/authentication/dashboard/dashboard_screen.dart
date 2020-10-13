@@ -6,12 +6,7 @@ import 'package:flutter_starterkit_firebase/authentication/register/register_for
 import 'package:flutter_starterkit_firebase/core/auth_service.dart';
 import 'dashboard_form.dart';
 
-
-
-
 class DashBoardScreen extends StatelessWidget {
-
-
   const DashBoardScreen({Key key, @required AuthService service})
       : assert(service != null),
         _authService = service,

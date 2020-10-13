@@ -51,7 +51,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     } else if (event is SubmitRegistrationPressed) {
       yield* _mapRegisterUser(event.email, event.fullname, event.phonenumber, event.password);
     }
-
   }
 
   Stream<AuthenticationState> _mapAppStartedToState() async* {
@@ -117,10 +116,14 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   }
 
   Stream<AuthenticationState> _mapRegisterUser(
-      String email, String fullname, String phonenumber, String password) async* {
+    String email,
+    String fullname,
+    String phonenumber,
+    String password,
+  ) async* {
     try {
       yield Loading();
-      final UserCredential credential = await _service.verifyUser(email, password);
+      final UserCredential credential = await _service.registerUser(email, password, fullname, phonenumber);
       if (credential != null)
         yield Successful();
       else
@@ -129,5 +132,4 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       yield Failed(message: e.cause);
     }
   }
-
 }
