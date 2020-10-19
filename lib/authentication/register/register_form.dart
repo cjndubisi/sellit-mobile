@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starterkit_firebase/authentication/authentication_bloc/authentication_bloc.dart';
 import 'package:flutter_starterkit_firebase/utils/resources.dart';
+import 'package:flutter_starterkit_firebase/utils/utility.dart';
 
 class RegisterForm extends StatefulWidget {
   @override
@@ -29,17 +30,18 @@ class _RegisterForm extends State<RegisterForm> {
 
   @override
   Widget build(BuildContext context) {
+    final UtilityProvider _utilityProvider = context.repository<UtilityProvider>();
     final TextFormField emailText = TextFormField(
       onSaved: (String value) => _email = value.trim(),
       keyboardType: TextInputType.text,
       decoration: const InputDecoration(
-        fillColor: colorWhite,
+        fillColor: Colors.white,
         filled: true,
-        contentPadding: mediumSpacing,
+        contentPadding: Spacing.medium,
         hintStyle: style,
         hintText: 'Email',
-        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: colorGrey)),
-        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: colorGrey)),
+        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
       ),
       maxLines: 1,
       validator: (String value) => value.isEmpty ? 'Email can\'t be empty' : null,
@@ -47,14 +49,14 @@ class _RegisterForm extends State<RegisterForm> {
     final TextFormField phoneText = TextFormField(
       keyboardType: TextInputType.phone,
       decoration: const InputDecoration(
-        fillColor: colorWhite,
+        fillColor: Colors.white,
         filled: true,
         counterText: '',
-        contentPadding: mediumSpacing,
+        contentPadding: Spacing.medium,
         hintStyle: style,
         hintText: 'Phone',
-        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: colorGrey)),
-        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: colorGrey)),
+        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
       ),
       maxLines: 1,
       maxLength: 11,
@@ -65,14 +67,14 @@ class _RegisterForm extends State<RegisterForm> {
       onSaved: (String value) => _fullName = value.trim(),
       keyboardType: TextInputType.text,
       decoration: const InputDecoration(
-        fillColor: colorWhite,
+        fillColor: Colors.white,
         filled: true,
         counterText: '',
-        contentPadding: mediumSpacing,
+        contentPadding: Spacing.medium,
         hintStyle: style,
         hintText: 'Name',
-        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: colorGrey)),
-        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: colorGrey)),
+        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
       ),
       maxLines: 1,
       validator: (String value) => value.isEmpty ? 'Name can\'t be empty' : null,
@@ -81,13 +83,13 @@ class _RegisterForm extends State<RegisterForm> {
       onSaved: (String value) => _password = value.trim(),
       keyboardType: TextInputType.number,
       decoration: const InputDecoration(
-        fillColor: colorWhite,
+        fillColor: Colors.white,
         filled: true,
-        contentPadding: mediumSpacing,
+        contentPadding: Spacing.medium,
         hintStyle: style,
         hintText: 'Password',
-        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: colorGrey)),
-        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: colorGrey)),
+        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
       ),
       maxLines: 1,
       obscureText: true,
@@ -96,7 +98,7 @@ class _RegisterForm extends State<RegisterForm> {
     final Material registerBtn = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(10.0),
-      color: colorPrimary,
+      color: ColorPalette.primary,
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
         onPressed: () => attemptRegister(),
@@ -107,15 +109,18 @@ class _RegisterForm extends State<RegisterForm> {
         ),
       ),
     );
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Registration',
-          style: style.copyWith(color: colorWhite),
-        ),
-        centerTitle: false,
-      ),
-      body: SingleChildScrollView(
+    return BlocListener<AuthenticationBloc, AuthenticationState>(
+      listener: (BuildContext context, AuthenticationState state) async {
+        if (state is Loading)
+          await _utilityProvider.startLoading(context);
+        else if (state is Successful) {
+          _registerBLoc.add(LoggedIn());
+          _utilityProvider.loadingSuccessful(null);
+        } else if (state is Failed) {
+          _utilityProvider.loadingFailed(state.message);
+        }
+      },
+      child: SingleChildScrollView(
         child: Container(
           alignment: Alignment.topLeft,
           padding: const EdgeInsets.all(20),
@@ -129,30 +134,30 @@ class _RegisterForm extends State<RegisterForm> {
                   'Email Address',
                   style: style.copyWith(fontWeight: FontWeight.bold),
                 ),
-                smallSize,
+                Sizing.small,
                 emailText,
-                mediumSize,
+                Sizing.medium,
                 Text(
                   'Phone Number',
                   style: style.copyWith(fontWeight: FontWeight.bold),
                 ),
-                smallSize,
+                Sizing.small,
                 phoneText,
-                mediumSize,
+                Sizing.medium,
                 Text(
                   'Full Name',
                   style: style.copyWith(fontWeight: FontWeight.bold),
                 ),
-                smallSize,
+                Sizing.small,
                 fullNameText,
-                fabSize,
+                Sizing.fab,
                 Text(
                   'Password',
                   style: style.copyWith(fontWeight: FontWeight.bold),
                 ),
-                smallSize,
+                Sizing.small,
                 passwordText,
-                fabSize,
+                Sizing.fab,
                 registerBtn
               ],
             ),

@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,13 +10,16 @@ import 'package:meta/meta.dart';
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
-class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
+class AuthenticationBloc
+    extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc({@required AuthService service})
       : assert(service != null),
         _service = service,
         super(null);
 
   final AuthService _service;
+
+  AuthService get service => _service;
 
   @override
   Future<void> close() {
@@ -36,20 +40,15 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       yield* _mapLoggedOutToState();
     } else if (event is LoginWithGooglePressed) {
       yield* _mapLoginWithGoogleEvent();
-    } else if (event is LoginWithFaceBookPressed) {
+    } else if (event is LoginWithFacebookPressed) {
       yield* _mapLoginWithFaceBookPressedToState();
     } else if (event is LoginWithEmailPasswordPressed) {
       yield* _mapLoginWithEmailPassEvent(event.email, event.password);
     } else if (event is SubmitRegistrationPressed) {
-      yield* _mapRegisterUser(event.email, event.fullname, event.phonenumber, event.password);
-    } else if (event is LoginWithGooglePressed) {
-      yield* _mapLoginWithGoogleEvent();
-    } else if (event is LoginWithFaceBookPressed) {
-      yield* _mapLoginWithFaceBookPressedToState();
-    } else if (event is LoginWithEmailPasswordPressed) {
-      yield* _mapLoginWithEmailPassEvent(event.email, event.password);
-    } else if (event is SubmitRegistrationPressed) {
-      yield* _mapRegisterUser(event.email, event.fullname, event.phonenumber, event.password);
+      yield* _mapRegisterUserToState(
+          event.email, event.fullname, event.phonenumber, event.password);
+    } else if (event is OnBoardingCompleted) {
+      yield* _mapOnBoardingCompletedToState();
     }
   }
 
@@ -81,6 +80,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   Stream<AuthenticationState> _mapLoginWithGoogleEvent() async* {
     try {
       yield Loading();
+      // ignore: unused_local_variable
       final UserCredential credential = await _service.googleSignIn();
 
       yield Successful();
@@ -102,10 +102,12 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     }
   }
 
-  Stream<AuthenticationState> _mapLoginWithEmailPassEvent(String email, String password) async* {
+  Stream<AuthenticationState> _mapLoginWithEmailPassEvent(
+      String email, String password) async* {
     try {
       yield Loading();
-      final UserCredential credential = await _service.verifyUser(email, password);
+      final UserCredential credential =
+          await _service.verifyUser(email, password);
       if (credential != null)
         yield Successful();
       else
@@ -115,7 +117,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     }
   }
 
-  Stream<AuthenticationState> _mapRegisterUser(
+  Stream<AuthenticationState> _mapRegisterUserToState(
     String email,
     String fullname,
     String phonenumber,
@@ -123,7 +125,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   ) async* {
     try {
       yield Loading();
-      final UserCredential credential = await _service.registerUser(email, password, fullname, phonenumber);
+      final UserCredential credential =
+          await _service.registerUser(email, password, fullname, phonenumber);
       if (credential != null)
         yield Successful();
       else
@@ -133,6 +136,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     }
   }
 
+  // ignore: unused_element
   Stream<AuthenticationState> _mapForgotPassword(String email) async* {
     try {
       yield Loading();
@@ -141,5 +145,10 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     } on CustomException catch (e) {
       yield Failed(message: e.cause);
     }
+  }
+
+  Stream<AuthenticationState> _mapOnBoardingCompletedToState() async* {
+    await Repository.getInstance().onBoardingCompleted();
+    yield UnAuthenticated();
   }
 }
