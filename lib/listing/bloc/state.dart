@@ -9,3 +9,4 @@ abstract class ListingState extends Equatable {
 
 class InitialState extends ListingState {}
 
+class NavigateToDetail extends ListingState {}

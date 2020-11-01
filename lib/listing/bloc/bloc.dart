@@ -21,12 +21,23 @@ class ListingBloc extends Bloc<ListingEvent, ListingState> {
 
   ListingState get initialState => InitialState();
 
+  ItemEntity get itemEntity => _service.selectedItem;
+
   @override
   Stream<ListingState> mapEventToState(ListingEvent event) async* {
     switch (event.runtimeType) {
       case InActiveSearch:
         yield InitialState();
         break;
+      case ListItemClickEvent:
+        yield* mapToListItemClickedEvent(event);
+        break;
     }
+  }
+
+  Stream<ListingState> mapToListItemClickedEvent(ListingEvent event) async* {
+    final itemClickedEvent = event as ListItemClickEvent;
+    _service.setSelectedItem = itemClickedEvent._itemEntity;
+    yield NavigateToDetail();
   }
 }

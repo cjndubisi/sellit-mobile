@@ -7,6 +7,7 @@ import 'package:flutter_starterkit_firebase/authentication/register/register_scr
 import 'package:flutter_starterkit_firebase/core/listing_service.dart';
 import 'package:flutter_starterkit_firebase/listing/widgets/screen.dart';
 import 'package:flutter_starterkit_firebase/listing/bloc/bloc.dart';
+import 'package:flutter_starterkit_firebase/listing/detail/detail_screen.dart';
 import 'package:flutter_starterkit_firebase/utils/utility.dart';
 
 import 'authentication/authentication_bloc/authentication_bloc.dart';
@@ -74,6 +75,7 @@ class MyApp extends StatelessWidget {
         '/register': (BuildContext context) => RegisterScreen(),
         '/forgot_password': (BuildContext context) => ForgotPasswordScreen(),
         '/dashboard': (BuildContext context) => ListingScreen(),
+        '/dashboard/detail': (BuildContext context) => DetailScreen(),
       },
       navigatorKey: _navService.key,
     );

@@ -7,3 +7,8 @@ abstract class ListingEvent extends Equatable {
 }
 
 class InActiveSearch extends ListingEvent {}
+
+class ListItemClickEvent extends ListingEvent {
+  ListItemClickEvent(this._itemEntity);
+  final ItemEntity _itemEntity;
+}

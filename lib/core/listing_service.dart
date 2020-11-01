@@ -7,9 +7,17 @@ import 'firebase_service.dart';
 class ListingService {
   ListingService() : _auth = FirebaseService();
 
-  const ListingService.fromFirebaseService(FirebaseService firebaseService) : _auth = firebaseService;
+  ListingService.fromFirebaseService(FirebaseService firebaseService) : _auth = firebaseService;
+
+  ItemEntity _selectedItem;
+
+  ItemEntity get selectedItem => _selectedItem;
 
   final FirebaseService _auth;
 
   Stream<List<ItemEntity>> get itemStream => _auth.itemStream;
+
+  set setSelectedItem(ItemEntity itemEntity) {
+    _selectedItem = itemEntity;
+  }
 }
