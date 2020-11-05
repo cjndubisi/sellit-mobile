@@ -46,7 +46,7 @@ class _RegisterForm extends State<RegisterForm> {
       maxLines: 1,
       validator: (String value) => value.isEmpty ? 'Email can\'t be empty' : null,
     );
-    final TextFormField phoneText = TextFormField(
+    final phoneText = TextFormField(
       keyboardType: TextInputType.phone,
       decoration: const InputDecoration(
         fillColor: Colors.white,
@@ -63,7 +63,7 @@ class _RegisterForm extends State<RegisterForm> {
       onSaved: (String value) => _phoneno = value.trim(),
       validator: (String value) => value.isEmpty ? 'Phone can\'t be empty' : null,
     );
-    final TextFormField fullNameText = TextFormField(
+    final fullNameText = TextFormField(
       onSaved: (String value) => _fullName = value.trim(),
       keyboardType: TextInputType.text,
       decoration: const InputDecoration(
@@ -79,7 +79,7 @@ class _RegisterForm extends State<RegisterForm> {
       maxLines: 1,
       validator: (String value) => value.isEmpty ? 'Name can\'t be empty' : null,
     );
-    final TextFormField passwordText = TextFormField(
+    final passwordText = TextFormField(
       onSaved: (String value) => _password = value.trim(),
       keyboardType: TextInputType.number,
       decoration: const InputDecoration(
@@ -95,7 +95,7 @@ class _RegisterForm extends State<RegisterForm> {
       obscureText: true,
       validator: (String value) => value.isEmpty ? 'Password can\'t be empty' : null,
     );
-    final Material registerBtn = Material(
+    final registerBtn = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(10.0),
       color: ColorPalette.primary,
@@ -111,9 +111,9 @@ class _RegisterForm extends State<RegisterForm> {
     );
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (BuildContext context, AuthenticationState state) async {
-        if (state is Loading)
+        if (state is Loading) {
           await _utilityProvider.startLoading(context);
-        else if (state is Successful) {
+        } else if (state is Successful) {
           _registerBLoc.add(LoggedIn());
           _utilityProvider.loadingSuccessful(null);
         } else if (state is Failed) {
@@ -168,7 +168,7 @@ class _RegisterForm extends State<RegisterForm> {
   }
 
   void attemptRegister() {
-    final FormState form = _formKey.currentState;
+    final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
       _registerBLoc.add(

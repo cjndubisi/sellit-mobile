@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_starterkit_firebase/core/auth_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -15,7 +14,7 @@ final AuthService auth = AuthService();
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  final AuthService _authService = AuthService.fromFirebaseService(firebaseServiceMock);
+  final _authService = AuthService.fromFirebaseService(firebaseServiceMock);
 
   group('auth unit test', () {
     test('successful login with email and password', () async {
@@ -23,13 +22,13 @@ void main() {
         return firebaseMockAuthResult;
       });
 
-      final UserCredential signedIn = await _authService.verifyUser('adex9ja@yahoo.com', '1111');
+      final signedIn = await _authService.verifyUser('adex9ja@yahoo.com', '1111');
       assert(signedIn != null);
       expect(signedIn, firebaseMockAuthResult);
     });
 
     test('failed login with email / password', () async {
-      final UserCredential signedIn = await _authService.verifyUser('mail', 'pass');
+      final signedIn = await _authService.verifyUser('mail', 'pass');
       assert(signedIn == null);
     });
 
@@ -39,7 +38,7 @@ void main() {
         return firebaseMockAuthResult;
       });
 
-      final UserCredential userRegistered =
+      final userRegistered =
           await _authService.registerUser('adex9ja@yahoo.com', '1111', 'Adeyemo Adeolu', '08166767271');
       assert(userRegistered != null);
       expect(userRegistered, firebaseMockAuthResult);

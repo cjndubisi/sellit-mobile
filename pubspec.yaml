@@ -23,35 +23,41 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.0
-  cloud_firestore: ^0.14.0+2
-  firebase_core: ^0.5.0
-  firebase_auth: ^0.18.0+1
-  firebase_crashlytics: ^0.2.1
-  equatable: ^1.2.0
   bloc: ^6.0.3
-  flutter_bloc: ^6.0.5
-  introduction_screen: ^1.0.7
-  shared_preferences: ^0.5.10
-  google_sign_in: ^4.5.3
-  rxdart: ^0.24.1
-  fluttertoast: ^3.1.3
-  progress_dialog: ^1.2.2
-  flutter_facebook_login: ^3.0.0
   cached_network_image: ^2.1.0+1
-  flutter_staggered_grid_view: ^0.3.2
   carousel_slider: ^2.0.0
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  cloud_firestore: ^0.14.0+2
+  cupertino_icons: ^1.0.0
+  enum_to_string: ^1.0.13
+  equatable: ^1.2.0
+  firebase_auth: ^0.18.0+1
+  firebase_core: ^0.5.0
+  firebase_crashlytics: ^0.2.1
+  firebase_storage: ^4.0.1
+  flutter_bloc: ^6.0.5
+  flutter_facebook_login: ^3.0.0
+  flutter_staggered_grid_view: ^0.3.2
+  fluttertoast: ^3.1.3
+  google_sign_in: ^4.5.3
+  intl: ^0.16.0
+  introduction_screen: ^1.0.7
+  multi_image_picker: ^4.7.14
+  progress_dialog: ^1.2.2
+  rxdart: ^0.24.1
+  solid_bottom_sheet: ^0.1.9
+  streaming_shared_preferences: ^1.0.1
+  url_launcher: ^5.7.10
+
+
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   bloc_test: ^7.0.4
-  mockito: ^4.0.0
   pedantic: ^1.8.0
-  async: ^2.3.0
-  test: ^1.3.0
   plugin_platform_interface: ^1.0.2
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -64,7 +70,6 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
-
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see

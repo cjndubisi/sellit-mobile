@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,8 +9,7 @@ import 'package:meta/meta.dart';
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
-class AuthenticationBloc
-    extends Bloc<AuthenticationEvent, AuthenticationState> {
+class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc({@required AuthService service})
       : assert(service != null),
         _service = service,
@@ -102,8 +100,7 @@ class AuthenticationBloc
     }
   }
 
-  Stream<AuthenticationState> _mapLoginWithEmailPassEvent(
-      String email, String password) async* {
+  Stream<AuthenticationState> _mapLoginWithEmailPassEvent(String email, String password) async* {
     try {
       yield Loading();
       final UserCredential credential =

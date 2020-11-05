@@ -40,9 +40,9 @@ class _LoginFormState extends State<LoginForm> {
 
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (BuildContext context, AuthenticationState state) async {
-        if (state is Loading)
+        if (state is Loading) {
           await _utilityProvider.startLoading(context);
-        else if (state is Successful) {
+        } else if (state is Successful) {
           _loginBloc.add(LoggedIn());
           _utilityProvider.loadingSuccessful(null);
         } else if (state is Failed)
