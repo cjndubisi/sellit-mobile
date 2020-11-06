@@ -1,38 +1,31 @@
-//Styles
 import 'package:flutter/material.dart';
 
 const TextStyle style = TextStyle(fontSize: 17.0);
-const TextStyle style2 = TextStyle(color: colorWhite);
+const TextStyle style2 = TextStyle(color: Colors.white);
 
-//Colors
-const Color colorPrimary = Color(0xff019d3c);
-const Color colorPrimaryDark = Color(0xff014f1e);
-const Color colorPrimaryLight = Color(0xff67c48a);
-const Color colorRed = Color(0xffe63946);
-const Color colorWhite = Colors.white;
-const Color colorLightGrey = Color(0xfff7f9f7);
-const Color colorGrey = Colors.grey;
-const Color colorBlack = Color(0xff111111);
-const Color colorBlue = Color(0xff3f7cac);
-const Color colorYellow = Color(0xffffda22);
-const Color colorLightPink = Color(0xffd87cac);
+extension ColorPalette on Colors {
+  static const Color primary = Color(0xff019d3c);
+  static const Color primaryDark = Color(0xff014f1e);
+  static const Color primaryLight = Color(0xff67c48a);
+  static const Color red = Color(0xffe63946);
+  static const Color lightGrey = Color(0xfff7f9f7);
+  static const Color black = Color(0xff111111);
+  static const Color blue = Color(0xff3f7cac);
+  static const Color yellow = Color(0xffffda22);
+  static const Color lightPink = Color(0xffd87cac);
+}
 
+extension Sizing on SizedBox {
+  static const SizedBox small = SizedBox(height: 5.0);
+  static const SizedBox medium = SizedBox(height: 10.0);
+  static const SizedBox fab = SizedBox(height: 16.0);
+  static const SizedBox big = SizedBox(height: 20.0);
+}
 //Sizes
-const SizedBox smallSize = SizedBox(
-  height: 5.0,
-);
-const SizedBox mediumSize = SizedBox(
-  height: 10.0,
-);
-const SizedBox fabSize = SizedBox(
-  height: 16.0,
-);
-const SizedBox bigSize = SizedBox(
-  height: 20.0,
-);
 
-//Padding
-const EdgeInsets smallSpacing = EdgeInsets.all(5);
-const EdgeInsets mediumSpacing = EdgeInsets.all(10);
-const EdgeInsets fabSpacing = EdgeInsets.all(16);
-const EdgeInsets bigSpacing = EdgeInsets.all(20);
+extension Spacing on EdgeInsets {
+  static const EdgeInsets small = EdgeInsets.all(5);
+  static const EdgeInsets medium = EdgeInsets.all(10);
+  static const EdgeInsets fab = EdgeInsets.all(16);
+  static const EdgeInsets big = EdgeInsets.all(20);
+}

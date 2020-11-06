@@ -1,0 +1,3 @@
+enum ItemTypeEntity{
+  newItem, usedItem
+}

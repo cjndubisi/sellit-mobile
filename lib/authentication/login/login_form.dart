@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starterkit_firebase/authentication/authentication_bloc/authentication_bloc.dart';
+import 'package:flutter_starterkit_firebase/core/navigation_service.dart';
 import 'package:flutter_starterkit_firebase/utils/resources.dart';
-
-import '../../main.dart';
+import 'package:flutter_starterkit_firebase/utils/utility.dart';
 
 class LoginForm extends StatefulWidget {
   @override
@@ -15,7 +15,7 @@ class _LoginFormState extends State<LoginForm> {
 
   String _password;
 
-  GlobalKey<FormState> form = GlobalKey<FormState>();
+  final GlobalKey<FormState> _form = GlobalKey<FormState>();
 
   AuthenticationBloc _loginBloc;
 
@@ -25,45 +25,60 @@ class _LoginFormState extends State<LoginForm> {
     _loginBloc = BlocProvider.of<AuthenticationBloc>(context);
   }
 
+  void attemptLogin() {
+    final FormState form = _form.currentState;
+    if (form.validate()) {
+      form.save();
+      _loginBloc.add(LoginWithEmailPasswordPressed(email: _email, password: _password));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final UtilityProvider _utilityProvider = context.repository<UtilityProvider>();
+    final NavigationService _navigationService = context.repository<NavigationService>();
+
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (BuildContext context, AuthenticationState state) async {
         if (state is Loading)
-          await startLoading(context);
+          await _utilityProvider.startLoading(context);
         else if (state is Successful) {
-          BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
-          loadingSuccessful(null);
-        } else if (state is Failed) loadingFailed(state.message);
+          _loginBloc.add(LoggedIn());
+          _utilityProvider.loadingSuccessful(null);
+        } else if (state is Failed)
+          _utilityProvider.loadingFailed(state.message);
+        else if (state is Authenticated) {
+          _navigationService.navigateTo('/dashboard');
+        }
       },
       child: SingleChildScrollView(
         child: Padding(
-          padding: fabSpacing,
+          padding: Spacing.fab,
           child: Form(
-            key: form,
+            key: _form,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                fabSize,
-                fabSize,
+                Sizing.fab,
+                Sizing.fab,
                 Text(
                   'Login to continue',
                   style: style.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                smallSize,
+                Sizing.small,
                 Text(
                   "Enter your email address and password to proceed. If you don't have an account, kindly register now",
-                  style: style.copyWith(fontSize: 11, color: colorGrey),
+                  style: style.copyWith(fontSize: 11, color: Colors.grey),
                 ),
-                fabSize,
+                Sizing.fab,
                 TextFormField(
                   decoration: const InputDecoration(hintText: 'Enter email address', prefixIcon: Icon(Icons.mail)),
                   onChanged: (String value) => _email = value.trim(),
                   keyboardType: TextInputType.emailAddress,
                   validator: (String value) => value.isEmpty ? 'Email address can\'t be empty' : null,
                 ),
-                fabSize,
+                Sizing.fab,
                 TextFormField(
                   decoration: const InputDecoration(hintText: 'Enter password', prefixIcon: Icon(Icons.lock)),
                   onSaved: (String value) => _password = value.trim(),
@@ -71,18 +86,18 @@ class _LoginFormState extends State<LoginForm> {
                   obscureText: true,
                   validator: (String value) => value.isEmpty ? 'Password can\'t be empty' : null,
                 ),
-                fabSize,
+                Sizing.fab,
                 FlatButton(
-                    onPressed: () => navigateTo('/forgot_password', null, true),
+                    onPressed: () => _navigationService.setRootRoute('/forgot_password'),
                     child: Text(
                       'Forgot password?',
-                      style: style.copyWith(decoration: TextDecoration.underline, color: colorBlue),
+                      style: style.copyWith(decoration: TextDecoration.underline, color: ColorPalette.blue),
                     )),
-                fabSize,
+                Sizing.fab,
                 Material(
                   elevation: 5.0,
                   borderRadius: BorderRadius.circular(10.0),
-                  color: colorPrimary,
+                  color: ColorPalette.primary,
                   child: MaterialButton(
                     minWidth: MediaQuery.of(context).size.width,
                     onPressed: () => attemptLogin(),
@@ -93,39 +108,25 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                   ),
                 ),
-                fabSize,
-                FlatButton(
-                    onPressed: () => navigateTo('/forgot_password', null, true),
-                    child: Text(
-                      'Forgot password?',
-                      style: style.copyWith(decoration: TextDecoration.underline, color: colorBlue),
-                    )),
-                fabSize,
-                FlatButton(
-                    onPressed: () => navigateTo('/forgot_password', null, true),
-                    child: Text(
-                      "Forgot password?",
-                      style: style.copyWith(decoration: TextDecoration.underline, color: colorBlue),
-                    )),
-                fabSize,
+                Sizing.fab,
                 Center(
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Text(
                         "Don't have an account?",
-                        style: style.copyWith(color: colorGrey),
+                        style: style.copyWith(color: Colors.grey),
                       ),
                       FlatButton(
-                          onPressed: () => navigateTo('/register', null, true),
+                          onPressed: () => _navigationService.setRootRoute('/register'),
                           child: Text(
                             'Register',
-                            style: style.copyWith(decoration: TextDecoration.underline, color: colorPrimary),
+                            style: style.copyWith(decoration: TextDecoration.underline, color: ColorPalette.primary),
                           ))
                     ],
                   ),
                 ),
-                fabSize,
+                Sizing.fab,
                 const Center(
                   child: Text(
                     'Or',
@@ -133,7 +134,7 @@ class _LoginFormState extends State<LoginForm> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                fabSize,
+                Sizing.fab,
                 Row(
                   children: [
                     Expanded(
@@ -141,11 +142,11 @@ class _LoginFormState extends State<LoginForm> {
                       child: Container(
                         height: 45.0,
                         child: GestureDetector(
-                          onTap: () => _loginBloc.add(LoginWithFaceBookPressed()),
+                          onTap: () => _loginBloc.add(LoginWithFacebookPressed()),
                           child: Container(
                             decoration: BoxDecoration(
                               border: Border.all(
-                                color: colorPrimary,
+                                color: ColorPalette.primary,
                                 style: BorderStyle.solid,
                                 width: 1.0,
                               ),
@@ -177,7 +178,7 @@ class _LoginFormState extends State<LoginForm> {
                           child: Container(
                             decoration: BoxDecoration(
                               border: Border.all(
-                                color: colorPrimary,
+                                color: ColorPalette.primary,
                                 style: BorderStyle.solid,
                                 width: 1.0,
                               ),
@@ -207,13 +208,5 @@ class _LoginFormState extends State<LoginForm> {
         ),
       ),
     );
-  }
-
-  void attemptLogin() {
-    final FormState current = form.currentState;
-    if (current.validate()) {
-      current.save();
-      _loginBloc.add(LoginWithEmailPasswordPressed(email: _email, password: _password));
-    }
   }
 }

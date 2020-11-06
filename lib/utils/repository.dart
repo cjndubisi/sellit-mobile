@@ -1,6 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../main.dart';
 import 'constants.dart';
 
 class Repository {
@@ -20,6 +19,6 @@ class Repository {
   Future<void> onBoardingCompleted() async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
     pref.setBool(Constants.FIRST_TIME, false);
-    navigateTo('/login');
+    //navigateTo('/dashboard');
   }
 }

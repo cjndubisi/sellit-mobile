@@ -8,13 +8,15 @@ abstract class AuthenticationEvent extends Equatable {
 
 class AppStarted extends AuthenticationEvent {}
 
+class OnBoardingCompleted extends AuthenticationEvent {}
+
 class LoggedIn extends AuthenticationEvent {}
 
 class LoggedOut extends AuthenticationEvent {}
 
 class LoginWithGooglePressed extends AuthenticationEvent {}
 
-class LoginWithFaceBookPressed extends AuthenticationEvent {}
+class LoginWithFacebookPressed extends AuthenticationEvent {}
 
 class LoginWithEmailPasswordPressed extends AuthenticationEvent {
   LoginWithEmailPasswordPressed({this.email, this.password});

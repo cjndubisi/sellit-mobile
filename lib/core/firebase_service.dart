@@ -1,16 +1,29 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:flutter_starterkit_firebase/model/item_entity.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'firestore_service.dart';
 
 class FirebaseService {
-  FirebaseService({FirebaseAuth firebaseAuth, FacebookLogin facebookSignIn, GoogleSignIn googleSignIn})
-      : _auth = firebaseAuth ?? FirebaseAuth.instance,
+  FirebaseService({
+    FirebaseAuth firebaseAuth,
+    FacebookLogin facebookSignIn,
+    GoogleSignIn googleSignIn,
+    FirestoreService firestore,
+  })  : _auth = firebaseAuth ?? FirebaseAuth.instance,
         _facebookLogin = facebookSignIn ?? FacebookLogin(),
-        _googleSignIn = googleSignIn ?? GoogleSignIn();
+        _googleSignIn = googleSignIn ?? GoogleSignIn(),
+        _firestoreService = firestore ?? FirestoreService();
 
   final FirebaseAuth _auth;
   final FacebookLogin _facebookLogin;
   final GoogleSignIn _googleSignIn;
+  final FirestoreService _firestoreService;
+
+  Stream<List<ItemEntity>> get itemStream =>
+      _firestoreService.collectionStream(path: 'items', builder: (data, _) => ItemEntity.fromJson(data));
 
   FirebaseAuth get instance => _auth;
 
