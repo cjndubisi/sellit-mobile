@@ -20,7 +20,6 @@ class _ListingWidget extends State<ListingWidget> {
   Widget build(BuildContext context) {
     final ListingBloc listingBloc = BlocProvider.of<ListingBloc>(context);
     return GestureDetector(
-      onTap: () => listingBloc.add(ListItemClickEvent(widget._itemEntity)),
       child: Card(
         margin: Spacing.small,
         child: CachedNetworkImage(
@@ -28,14 +27,18 @@ class _ListingWidget extends State<ListingWidget> {
           placeholder: (BuildContext context, String url) => const Icon(
             Icons.image,
             size: 90,
-            color: Colors.white,
+            color: ColorPalette.white,
           ),
-          errorWidget: (BuildContext context, String url, dynamic error) => const Icon(
+          errorWidget: (BuildContext context, String url, dynamic error) =>
+              const Icon(
             Icons.image,
             size: 90,
           ),
+          fit: BoxFit.cover,
         ),
       ),
+      onTap: () => listingBloc.add(ListItemClickEvent(widget._itemEntity)),
+      behavior: HitTestBehavior.opaque,
     );
   }
 }
