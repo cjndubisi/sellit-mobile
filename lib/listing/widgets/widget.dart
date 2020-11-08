@@ -35,6 +35,7 @@ class _ListingWidget extends State<ListingWidget> {
             size: 90,
           ),
           fit: BoxFit.cover,
+          width: MediaQuery.of(context).size.width,
         ),
       ),
       onTap: () => listingBloc.add(ListItemClickEvent(widget._itemEntity)),

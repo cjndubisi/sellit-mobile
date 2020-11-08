@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_starterkit_firebase/core/firebase_service.dart';
-import 'package:path/path.dart';
 import 'package:flutter_starterkit_firebase/core/listing_service.dart';
 import 'package:flutter_starterkit_firebase/listing/bloc/bloc.dart';
 import 'package:flutter_starterkit_firebase/model/item_entity.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:path/path.dart';
 
 import '../mocks/firebase_auth_mock.dart';
 
@@ -23,7 +23,8 @@ void main() {
     Directory.current.path,
     Directory.current.path.endsWith('test') ? '' : 'test',
   );
-  Future<String> _loadFromAsset() => File('$_testDirectory/resources/dummy.json').readAsString();
+  Future<String> _loadFromAsset() =>
+      File('$_testDirectory/resources/dummy.json').readAsString();
 
   setUp(() {
     firestoreServiceMock = FirestoreServiceMock();
@@ -50,11 +51,15 @@ void main() {
       // Prepare
       final String str = await _loadFromAsset();
       final List<dynamic> json = jsonDecode(str) as List<dynamic>;
-      final List<ItemEntity> dummy = json.map((dynamic e) => ItemEntity.fromJson(e as Map<String, dynamic>)).toList();
+      final List<ItemEntity> dummy = json
+          .map((dynamic e) => ItemEntity.fromJson(e as Map<String, dynamic>))
+          .toList();
 
-      final StreamController<List<ItemEntity>> streamController = StreamController.broadcast();
+      final StreamController<List<ItemEntity>> streamController =
+          StreamController.broadcast();
 
-      when(firestoreServiceMock.collectionStream<ItemEntity>(path: 'items', builder: anyNamed('builder')))
+      when(firestoreServiceMock.collectionStream<ItemEntity>(
+              path: 'items', builder: anyNamed('builder')))
           .thenAnswer((_) => streamController.stream);
 
       Timer(const Duration(seconds: 1), () {
@@ -75,6 +80,18 @@ void main() {
         listingBloc,
         emits(InitialState()),
       );
+    });
+
+    test('navigate to detail page successfully', () async {
+      final String str = await _loadFromAsset();
+      final List<dynamic> json = jsonDecode(str) as List<dynamic>;
+      final List<ItemEntity> dummy = json
+          .map((dynamic e) => ItemEntity.fromJson(e as Map<String, dynamic>))
+          .toList();
+
+      listingBloc.add(ListItemClickEvent(dummy[0]));
+
+      expect(listingBloc, emits(NavigateToDetail()));
     });
   });
 }
