@@ -21,7 +21,6 @@
 analyzer:
   strong-mode:
     implicit-casts: false
-    implicit-dynamic: false
   errors:
     # treat missing required parameters as a warning (not a hint)
     missing_required_param: warning
@@ -136,7 +135,7 @@ linter:
     # - prefer_asserts_with_message # not yet tested
     - prefer_collection_literals
     - prefer_conditional_assignment
-    - prefer_const_constructors
+
     - prefer_const_constructors_in_immutables
     - prefer_const_declarations
     - prefer_const_literals_to_create_immutables

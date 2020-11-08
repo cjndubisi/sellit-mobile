@@ -13,6 +13,7 @@ extension ColorPalette on Colors {
   static const Color blue = Color(0xff3f7cac);
   static const Color yellow = Color(0xffffda22);
   static const Color lightPink = Color(0xffd87cac);
+  static const Color white = Color(0xffffffff);
 }
 
 extension Sizing on SizedBox {

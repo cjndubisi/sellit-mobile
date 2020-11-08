@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_starterkit_firebase/core/firebase_service.dart';
-import 'package:path/path.dart';
 import 'package:flutter_starterkit_firebase/core/listing_service.dart';
 import 'package:flutter_starterkit_firebase/listing/bloc/bloc.dart';
 import 'package:flutter_starterkit_firebase/model/item_entity.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:path/path.dart';
 
 import '../mocks/firebase_auth_mock.dart';
 
@@ -43,7 +43,7 @@ void main() {
 
   group('listing bloc test', () {
     test('initial state is correct', () {
-      expect(listingBloc.initialState, InitialState());
+      expect(listingBloc.state, isA<InitialState>());
     });
 
     test('load item successfully', () async {
@@ -73,8 +73,18 @@ void main() {
 
       expect(
         listingBloc,
-        emits(InitialState()),
+        emits(isA<InitialState>()),
       );
+    });
+
+    test('navigate to detail page successfully', () async {
+      final String str = await _loadFromAsset();
+      final List<dynamic> json = jsonDecode(str) as List<dynamic>;
+      final List<ItemEntity> dummy = json.map((dynamic e) => ItemEntity.fromJson(e as Map<String, dynamic>)).toList();
+
+      listingBloc.add(ListItemClickEvent(dummy.first));
+
+      expect(listingBloc, emits(isA<NavigateToDetail>()));
     });
   });
 }

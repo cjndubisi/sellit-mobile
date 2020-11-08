@@ -7,7 +7,7 @@ import 'firebase_service.dart';
 class ListingService {
   ListingService() : _auth = FirebaseService();
 
-  const ListingService.fromFirebaseService(FirebaseService firebaseService) : _auth = firebaseService;
+  ListingService.fromFirebaseService(FirebaseService firebaseService) : _auth = firebaseService;
 
   final FirebaseService _auth;
 
