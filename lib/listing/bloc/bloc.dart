@@ -13,15 +13,11 @@ class ListingBloc extends Bloc<ListingEvent, ListingState> {
   ListingBloc({@required ListingService service})
       : assert(service != null),
         _service = service,
-        super(null);
+        super(InitialState());
 
   final ListingService _service;
 
   Stream<List<ItemEntity>> get itemStream => _service.itemStream;
-
-  ListingState get initialState => InitialState();
-
-  ItemEntity get itemEntity => _service.selectedItem;
 
   @override
   Stream<ListingState> mapEventToState(ListingEvent event) async* {
@@ -30,14 +26,12 @@ class ListingBloc extends Bloc<ListingEvent, ListingState> {
         yield InitialState();
         break;
       case ListItemClickEvent:
-        yield* mapToListItemClickedEvent(event);
+        yield* mapToListItemClickedEvent(event as ListItemClickEvent);
         break;
     }
   }
 
-  Stream<ListingState> mapToListItemClickedEvent(ListingEvent event) async* {
-    final itemClickedEvent = event as ListItemClickEvent;
-    _service.setSelectedItem = itemClickedEvent._itemEntity;
-    yield NavigateToDetail();
+  Stream<ListingState> mapToListItemClickedEvent(ListItemClickEvent event) async* {
+    yield NavigateToDetail(event._itemEntity);
   }
 }

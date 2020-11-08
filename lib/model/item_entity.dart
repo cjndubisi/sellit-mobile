@@ -1,5 +1,8 @@
+import 'package:flutter_starterkit_firebase/model/user.dart';
+
 class ItemEntity {
   const ItemEntity(
+    this.id,
     this.author,
     this.title,
     this.description,
@@ -11,7 +14,8 @@ class ItemEntity {
   );
 
   ItemEntity.fromJson(Map<String, dynamic> json)
-      : author = json['author'].toString(),
+      : id = json['_uid'].toString(),
+        author = User(name:json['author'].toString() , number: 'fsdfasd'),
         title = json['title'].toString(),
         description = json['description'].toString(),
         price = double.parse(json['price'].toString()),
@@ -20,7 +24,8 @@ class ItemEntity {
         dateCreated = json['dateCreated'].toString(),
         images = json['images'] as List<dynamic>;
 
-  final String author;
+  final String id;
+  final User author;
   final String title;
   final String description;
   final double price;

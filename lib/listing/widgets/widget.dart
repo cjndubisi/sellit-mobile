@@ -6,24 +6,20 @@ import 'package:flutter_starterkit_firebase/listing/bloc/bloc.dart';
 import 'package:flutter_starterkit_firebase/model/item_entity.dart';
 import 'package:flutter_starterkit_firebase/utils/resources.dart';
 
-class ListingWidget extends StatefulWidget {
-  const ListingWidget(this._itemEntity);
+class ListItemWidget extends StatelessWidget {
+  const ListItemWidget(this._itemEntity);
 
   final ItemEntity _itemEntity;
 
   @override
-  _ListingWidget createState() => _ListingWidget();
-}
-
-class _ListingWidget extends State<ListingWidget> {
-  @override
   Widget build(BuildContext context) {
+ 
     final ListingBloc listingBloc = BlocProvider.of<ListingBloc>(context);
     return GestureDetector(
       child: Card(
         margin: Spacing.small,
         child: CachedNetworkImage(
-          imageUrl: widget._itemEntity.images[0].toString(),
+          imageUrl: _itemEntity.images[0].toString(),
           placeholder: (BuildContext context, String url) => const Icon(
             Icons.image,
             size: 90,
@@ -38,7 +34,7 @@ class _ListingWidget extends State<ListingWidget> {
           width: MediaQuery.of(context).size.width,
         ),
       ),
-      onTap: () => listingBloc.add(ListItemClickEvent(widget._itemEntity)),
+      onTap: () => listingBloc.add(ListItemClickEvent(_itemEntity)),
       behavior: HitTestBehavior.opaque,
     );
   }

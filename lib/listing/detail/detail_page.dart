@@ -3,52 +3,39 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starterkit_firebase/listing/bloc/bloc.dart';
-import 'package:flutter_starterkit_firebase/model/item_entity.dart';
 import 'package:flutter_starterkit_firebase/utils/resources.dart';
 
-class DetailPage extends StatefulWidget {
-  @override
-  _DetailPage createState() => _DetailPage();
-}
-
-class _DetailPage extends State<DetailPage> {
-  ItemEntity _itemEntity;
-
-  ListingBloc _listingBloc;
-
-  @override
-  void initState() {
-    super.initState();
-    _listingBloc = BlocProvider.of<ListingBloc>(context);
-    _itemEntity = _listingBloc.itemEntity;
-  }
+class DetailPage extends StatelessWidget {
+  const DetailPage();
 
   @override
   Widget build(BuildContext context) {
+    final _itemEntity = (BlocProvider.of<ListingBloc>(context).state as NavigateToDetail).itemEntity;
     final carousel = CarouselSlider.builder(
-        itemCount: _itemEntity.images.length,
-        itemBuilder: (BuildContext context, int index) => Container(
-            width: MediaQuery.of(context).size.width,
-            child: CachedNetworkImage(
-              imageUrl: _itemEntity.images[index].toString(),
-              placeholder: (BuildContext context, String url) => const Icon(
-                Icons.image,
-                size: 90,
-                color: Colors.white,
-              ),
-              errorWidget: (BuildContext context, String url, dynamic error) =>
-                  const Icon(
-                Icons.image,
-                size: 90,
-              ),
-              fit: BoxFit.cover,
-            )),
-        options: CarouselOptions(
-          height: 200,
-          enableInfiniteScroll: true,
-          enlargeCenterPage: false,
-          autoPlay: true,
-        ));
+      itemCount: _itemEntity.images.length,
+      itemBuilder: (BuildContext context, int index) => Container(
+        width: MediaQuery.of(context).size.width,
+        child: CachedNetworkImage(
+          imageUrl: _itemEntity.images[index].toString(),
+          placeholder: (BuildContext context, String url) => const Icon(
+            Icons.image,
+            size: 90,
+            color: Colors.white,
+          ),
+          errorWidget: (BuildContext context, String url, dynamic error) => const Icon(
+            Icons.image,
+            size: 90,
+          ),
+          fit: BoxFit.cover,
+        ),
+      ),
+      options: CarouselOptions(
+        height: 200,
+        enableInfiniteScroll: true,
+        enlargeCenterPage: false,
+        autoPlay: true,
+      ),
+    );
     return BlocListener<ListingBloc, ListingState>(
       listener: (BuildContext context, ListingState state) async {},
       child: Scaffold(
@@ -106,7 +93,7 @@ class _DetailPage extends State<DetailPage> {
                         child: Container(),
                       ),
                       Text(
-                        _itemEntity.author,
+                        _itemEntity.author.name,
                         style: style,
                       ),
                     ],

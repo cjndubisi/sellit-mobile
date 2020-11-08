@@ -9,15 +9,7 @@ class ListingService {
 
   ListingService.fromFirebaseService(FirebaseService firebaseService) : _auth = firebaseService;
 
-  ItemEntity _selectedItem;
-
-  ItemEntity get selectedItem => _selectedItem;
-
   final FirebaseService _auth;
 
   Stream<List<ItemEntity>> get itemStream => _auth.itemStream;
-
-  set setSelectedItem(ItemEntity itemEntity) {
-    _selectedItem = itemEntity;
-  }
 }

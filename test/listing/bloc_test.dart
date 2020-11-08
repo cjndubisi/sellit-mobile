@@ -23,8 +23,7 @@ void main() {
     Directory.current.path,
     Directory.current.path.endsWith('test') ? '' : 'test',
   );
-  Future<String> _loadFromAsset() =>
-      File('$_testDirectory/resources/dummy.json').readAsString();
+  Future<String> _loadFromAsset() => File('$_testDirectory/resources/dummy.json').readAsString();
 
   setUp(() {
     firestoreServiceMock = FirestoreServiceMock();
@@ -44,22 +43,18 @@ void main() {
 
   group('listing bloc test', () {
     test('initial state is correct', () {
-      expect(listingBloc.initialState, InitialState());
+      expect(listingBloc.state, isA<InitialState>());
     });
 
     test('load item successfully', () async {
       // Prepare
       final String str = await _loadFromAsset();
       final List<dynamic> json = jsonDecode(str) as List<dynamic>;
-      final List<ItemEntity> dummy = json
-          .map((dynamic e) => ItemEntity.fromJson(e as Map<String, dynamic>))
-          .toList();
+      final List<ItemEntity> dummy = json.map((dynamic e) => ItemEntity.fromJson(e as Map<String, dynamic>)).toList();
 
-      final StreamController<List<ItemEntity>> streamController =
-          StreamController.broadcast();
+      final StreamController<List<ItemEntity>> streamController = StreamController.broadcast();
 
-      when(firestoreServiceMock.collectionStream<ItemEntity>(
-              path: 'items', builder: anyNamed('builder')))
+      when(firestoreServiceMock.collectionStream<ItemEntity>(path: 'items', builder: anyNamed('builder')))
           .thenAnswer((_) => streamController.stream);
 
       Timer(const Duration(seconds: 1), () {
@@ -78,20 +73,18 @@ void main() {
 
       expect(
         listingBloc,
-        emits(InitialState()),
+        emits(isA<InitialState>()),
       );
     });
 
     test('navigate to detail page successfully', () async {
       final String str = await _loadFromAsset();
       final List<dynamic> json = jsonDecode(str) as List<dynamic>;
-      final List<ItemEntity> dummy = json
-          .map((dynamic e) => ItemEntity.fromJson(e as Map<String, dynamic>))
-          .toList();
+      final List<ItemEntity> dummy = json.map((dynamic e) => ItemEntity.fromJson(e as Map<String, dynamic>)).toList();
 
-      listingBloc.add(ListItemClickEvent(dummy[0]));
+      listingBloc.add(ListItemClickEvent(dummy.first));
 
-      expect(listingBloc, emits(NavigateToDetail()));
+      expect(listingBloc, emits(isA<NavigateToDetail>()));
     });
   });
 }

@@ -7,17 +7,12 @@ import 'package:flutter_starterkit_firebase/listing/widgets/widget.dart';
 import 'package:flutter_starterkit_firebase/model/item_entity.dart';
 import 'package:flutter_starterkit_firebase/utils/resources.dart';
 
-class HomePage extends StatefulWidget {
-  @override
-  _HomePage createState() => _HomePage();
-}
+class HomePage extends StatelessWidget {
 
-class _HomePage extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final ListingBloc listingBloc = BlocProvider.of<ListingBloc>(context);
-    final NavigationService navigationService =
-        context.repository<NavigationService>();
+    final NavigationService navigationService = context.repository<NavigationService>();
     return BlocListener<ListingBloc, ListingState>(
       listener: (BuildContext context, ListingState state) {
         switch (state.runtimeType) {
@@ -37,18 +32,13 @@ class _HomePage extends State<HomePage> {
         ),
         body: StreamBuilder<List<ItemEntity>>(
           stream: listingBloc.itemStream,
-          builder:
-              (BuildContext context, AsyncSnapshot<List<ItemEntity>> snapshot) {
-            if (snapshot.hasData &&
-                snapshot.data != null &&
-                snapshot.data.isNotEmpty)
+          builder: (BuildContext context, AsyncSnapshot<List<ItemEntity>> snapshot) {
+            if (snapshot.hasData && snapshot.data != null && snapshot.data.isNotEmpty)
               return StaggeredGridView.countBuilder(
                 crossAxisCount: snapshot.data.length ~/ 2,
                 itemCount: snapshot.data.length,
-                itemBuilder: (BuildContext context, int index) =>
-                    ListingWidget(snapshot.data[index]),
-                staggeredTileBuilder: (int index) =>
-                    StaggeredTile.count(2, index.isEven ? 2 : 1),
+                itemBuilder: (BuildContext context, int index) => ListItemWidget(snapshot.data[index]),
+                staggeredTileBuilder: (int index) => StaggeredTile.count(2, index.isEven ? 2 : 1),
                 mainAxisSpacing: 4.0,
                 crossAxisSpacing: 4.0,
               );
