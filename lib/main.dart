@@ -30,21 +30,21 @@ class DI extends StatelessWidget {
           RepositoryProvider<AuthService>(create: (_) => AuthService()),
           RepositoryProvider<NavigationService>(create: (_) => NavigationService()),
           RepositoryProvider<UtilityProvider>(create: (_) => UtilityProvider()),
-          RepositoryProvider(create: (_)=>ServiceUtilityProvider()),
+          RepositoryProvider(create: (_) => ServiceUtilityProvider()),
           RepositoryProvider<ListingService>(create: (_) => ListingService())
         ],
         child: MultiBlocProvider(
           providers: [
             BlocProvider<AuthenticationBloc>(
               create: (_) {
-                final _authService = _.repository<AuthService>();
-                return AuthenticationBloc(service: _authService)..add(AppStarted());
+                return AuthenticationBloc(service: _.repository<AuthService>());
               },
             ),
             BlocProvider<ListingBloc>(create: (_) {
-              final _listService = _.repository<ListingService>();
-              final _utilProvider = _.repository<ServiceUtilityProvider>();
-              return ListingBloc(service: _listService, serviceProvider: _utilProvider)..add(InActiveSearch());
+              return ListingBloc(
+                service: _.repository<ListingService>(),
+                serviceProvider: _.repository<ServiceUtilityProvider>(),
+              );
             }),
           ],
           child: MyApp(),

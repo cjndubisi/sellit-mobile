@@ -12,6 +12,7 @@ class DetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final _controller = SolidController();
     final _listingBloc = BlocProvider.of<ListingBloc>(context);
     final _itemEntity = (_listingBloc.state as NavigateToDetail).itemEntity;
@@ -40,6 +41,7 @@ class DetailPage extends StatelessWidget {
         autoPlay: true,
       ),
     );
+    
     return BlocListener<ListingBloc, ListingState>(
       listener: (BuildContext context, ListingState state) async {},
       child: Scaffold(

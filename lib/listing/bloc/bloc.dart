@@ -19,32 +19,23 @@ class ListingBloc extends Bloc<ListingEvent, ListingState> {
 
   final ListingService _service;
   final ServiceUtilityProvider _util;
-
   Stream<List<ItemEntity>> get itemStream => _service.itemStream;
 
   @override
   Stream<ListingState> mapEventToState(ListingEvent event) async* {
-    switch (event.runtimeType) {
-      case InActiveSearch:
-        yield InitialState();
-        break;
-      case ListItemClickEvent:
-        yield* mapToListItemClickedEvent(event as ListItemClickEvent);
-        break;
-      case ContactSellerEvent:
-        yield* _mapToContactSellerEvent(event as ContactSellerEvent);
-        break;
+    if (event is InActiveSearch) {
+      yield InitialState();
+    } else if (event is ListItemClickEvent) {
+      yield NavigateToDetail(event._itemEntity);
+    } else if (event is ContactSellerEvent) {
+      yield* _mapToContactSellerEvent(event);
     }
-  }
-
-  Stream<ListingState> mapToListItemClickedEvent(ListItemClickEvent event) async* {
-    yield NavigateToDetail(event._itemEntity);
   }
 
   Stream<ListingState> _mapToContactSellerEvent(ContactSellerEvent event) async* {
     try {
       yield StartLoading();
-      await _util.sendSms(event._contactSellerType, event.product);
+      _util.sendSms(event._contactSellerType, event.product);
       yield ContactSellerState();
     } catch (e) {
       yield LoadingFailed(e.toString());
