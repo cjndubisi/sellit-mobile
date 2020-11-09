@@ -4,13 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starterkit_firebase/listing/bloc/bloc.dart';
 import 'package:flutter_starterkit_firebase/utils/resources.dart';
+import 'package:flutter_starterkit_firebase/utils/service_utility.dart';
+import 'package:solid_bottom_sheet/solid_bottom_sheet.dart';
 
 class DetailPage extends StatelessWidget {
   const DetailPage();
 
   @override
   Widget build(BuildContext context) {
-    final _itemEntity = (BlocProvider.of<ListingBloc>(context).state as NavigateToDetail).itemEntity;
+
+    final _controller = SolidController();
+    final _listingBloc = BlocProvider.of<ListingBloc>(context);
+    final _itemEntity = (_listingBloc.state as NavigateToDetail).itemEntity;
     final carousel = CarouselSlider.builder(
       itemCount: _itemEntity.images.length,
       itemBuilder: (BuildContext context, int index) => Container(
@@ -36,6 +41,7 @@ class DetailPage extends StatelessWidget {
         autoPlay: true,
       ),
     );
+    
     return BlocListener<ListingBloc, ListingState>(
       listener: (BuildContext context, ListingState state) async {},
       child: Scaffold(
@@ -46,75 +52,125 @@ class DetailPage extends StatelessWidget {
           ),
           centerTitle: false,
         ),
-        body: Column(
-          children: [
-            carousel,
-            Padding(
-              padding: Spacing.fab,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        body: Padding(
+          padding: Spacing.fab,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              carousel,
+              Text(
+                _itemEntity.description,
+                style: style,
+              ),
+              Divider(),
+              Sizing.medium,
+              Row(
                 children: [
+                  Icon(Icons.account_balance_wallet),
+                  Expanded(
+                    child: Container(),
+                  ),
                   Text(
-                    _itemEntity.description,
+                    'NGN ${_itemEntity.price}',
                     style: style,
-                  ),
-                  const Divider(),
-                  Sizing.medium,
-                  Row(
-                    children: [
-                      const Icon(Icons.account_balance_wallet),
-                      Expanded(
-                        child: Container(),
-                      ),
-                      Text(
-                        'NGN ${_itemEntity.price}',
-                        style: style,
-                      ),
-                    ],
-                  ),
-                  const Divider(),
-                  Row(
-                    children: [
-                      const Icon(Icons.location_on),
-                      Expanded(
-                        child: Container(),
-                      ),
-                      Text(
-                        _itemEntity.location,
-                        style: style,
-                      ),
-                    ],
-                  ),
-                  const Divider(),
-                  Row(
-                    children: [
-                      const Icon(Icons.person),
-                      Expanded(
-                        child: Container(),
-                      ),
-                      Text(
-                        _itemEntity.author.name,
-                        style: style,
-                      ),
-                    ],
-                  ),
-                  const Divider(),
-                  Row(
-                    children: [
-                      const Icon(Icons.calendar_today),
-                      Expanded(
-                        child: Container(),
-                      ),
-                      Text(
-                        _itemEntity.dateCreated,
-                        style: style,
-                      ),
-                    ],
                   ),
                 ],
               ),
-            )
-          ],
+              Divider(),
+              Row(
+                children: [
+                  Icon(Icons.location_on),
+                  Expanded(
+                    child: Container(),
+                  ),
+                  Text(
+                    _itemEntity.location,
+                    style: style,
+                  ),
+                ],
+              ),
+              Divider(),
+              Row(
+                children: [
+                  Icon(Icons.person),
+                  Spacer(),
+                  Text(
+                    _itemEntity.author.name,
+                    style: style,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 50,
+              ),
+              FlatButton(
+                onPressed: () => _controller.isOpened ? _controller.hide() : _controller.show(),
+                child: Text(
+                  'Contact Seller',
+                  style: TextStyle(color: Colors.white),
+                ),
+                color: Colors.green,
+              )
+            ],
+          ),
+        ),
+        bottomSheet: SolidBottomSheet(
+          controller: _controller,
+          maxHeight: 100,
+          headerBar: Container(
+            height: 10,
+            width: 10,
+          ),
+          body: Container(
+            child: Wrap(
+              children: <Widget>[
+                Column(
+                  children: [
+                    SizedBox(
+                      height: 50,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          FlatButton(
+                            onPressed: () => _listingBloc.add(ContactSellerEvent(
+                              ContactSellerType.whatsapp,
+                              _itemEntity,
+                            )),
+                            child: Text(
+                              'whatsapp',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            color: Colors.green,
+                          ),
+                          SizedBox(
+                            width: 50,
+                          ),
+                          FlatButton(
+                            onPressed: () => _listingBloc.add(ContactSellerEvent(
+                              ContactSellerType.sms,
+                              _itemEntity,
+                            )),
+                            child: Text(
+                              'sms',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            color: Colors.green,
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

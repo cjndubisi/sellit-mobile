@@ -9,7 +9,7 @@ import 'package:flutter_starterkit_firebase/listing/widgets/screen.dart';
 import 'package:flutter_starterkit_firebase/listing/bloc/bloc.dart';
 import 'package:flutter_starterkit_firebase/listing/detail/detail_screen.dart';
 import 'package:flutter_starterkit_firebase/utils/utility.dart';
-
+import 'package:flutter_starterkit_firebase/utils/service_utility.dart';
 import 'authentication/authentication_bloc/authentication_bloc.dart';
 import 'authentication/login/login_screen.dart';
 import 'authentication/onboarding/onboarding_page.dart';
@@ -26,29 +26,36 @@ class DI extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
-      providers: <RepositoryProvider<dynamic>>[
-        RepositoryProvider<NavigationService>(create: (_) => NavigationService()),
-        RepositoryProvider<UtilityProvider>(create: (_) => UtilityProvider()),
-      ],
-      child: MultiBlocProvider(
-        providers: <BlocProvider<dynamic>>[
-          BlocProvider<AuthenticationBloc>(
-            create: (_) => AuthenticationBloc(service: AuthService())..add(AppStarted()),
-          ),
-          BlocProvider<ListingBloc>(
-            create: (_) => ListingBloc(service: ListingService())..add(InActiveSearch()),
-          ),
+        providers: [
+          RepositoryProvider<AuthService>(create: (_) => AuthService()),
+          RepositoryProvider<NavigationService>(create: (_) => NavigationService()),
+          RepositoryProvider<UtilityProvider>(create: (_) => UtilityProvider()),
+          RepositoryProvider(create: (_) => ServiceUtilityProvider()),
+          RepositoryProvider<ListingService>(create: (_) => ListingService())
         ],
-        child: MyApp(),
-      ),
-    );
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider<AuthenticationBloc>(
+              create: (_) {
+                return AuthenticationBloc(service: _.repository<AuthService>());
+              },
+            ),
+            BlocProvider<ListingBloc>(create: (_) {
+              return ListingBloc(
+                service: _.repository<ListingService>(),
+                serviceProvider: _.repository<ServiceUtilityProvider>(),
+              );
+            }),
+          ],
+          child: MyApp(),
+        ));
   }
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final NavigationService _navService = context.repository<NavigationService>();
+    final _navService = context.repository<NavigationService>();
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.green,

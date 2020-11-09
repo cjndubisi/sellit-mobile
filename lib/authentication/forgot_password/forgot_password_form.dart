@@ -40,7 +40,7 @@ class _ForgotPasswordForm extends State<ForgotPasswordForm> {
       maxLines: 1,
       validator: (String value) => value.isEmpty ? 'Email can\'t be empty' : null,
     );
-    final Material forgotPassBtn = Material(
+    final forgotPassBtn = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(10.0),
       color: ColorPalette.primary,
@@ -61,7 +61,7 @@ class _ForgotPasswordForm extends State<ForgotPasswordForm> {
         } else if (state is Successful) {
           _utilityProvider.loadingSuccessful(null);
         } else if (state is Failed) {
-          _utilityProvider.loadingFailed(state.message);
+          await _utilityProvider.loadingFailed(state.message);
         }
       },
       child: SingleChildScrollView(
@@ -92,7 +92,7 @@ class _ForgotPasswordForm extends State<ForgotPasswordForm> {
   }
 
   void attemptForgotPassword() {
-    final FormState form = _formKey.currentState;
+    final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
       _authenticationBloc.add(ForgotPasswordPressed(email: _email));

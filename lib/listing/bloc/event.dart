@@ -9,3 +9,9 @@ class ListItemClickEvent extends ListingEvent {
   ListItemClickEvent(this._itemEntity);
   final ItemEntity _itemEntity;
 }
+
+class ContactSellerEvent extends ListingEvent {
+  ContactSellerEvent(this._contactSellerType, this.product);
+  final ContactSellerType _contactSellerType;
+  final ItemEntity product;
+}

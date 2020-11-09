@@ -6,11 +6,7 @@ import 'package:progress_dialog/progress_dialog.dart';
 class UtilityProvider {
   void toastSuccess(String message) {
     Fluttertoast.showToast(
-        msg: message ?? '',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.green,
-        textColor: Colors.white);
+        msg: message ?? '', toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.BOTTOM, textColor: Colors.white);
   }
 
   void toastInfo(String message) {
@@ -54,55 +50,13 @@ class UtilityProvider {
     if (_progressDialog != null && _progressDialog.isShowing())
       _progressDialog.hide().then((bool isHidden) {
         if (message != null) {
-          if (showDialog)
+          if (showDialog) {
             showMessageWithDialog(message, context, btnClicked);
-          else
+          } else {
             toastSuccess(message);
+          }
         }
       });
-  }
-
-  void showMessageWithDialog(String message, BuildContext context, [VoidCallback btnClicked]) {
-    showDialog<Widget>(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32))),
-            title: Row(
-              // ignore: prefer_const_literals_to_create_immutables
-              children: <Widget>[
-                const Icon(
-                  Icons.info,
-                  color: ColorPalette.primary,
-                ),
-                const VerticalDivider(),
-                const Text(
-                  'Message',
-                  style: style,
-                )
-              ],
-            ),
-            content: Text(
-              message,
-              style: style,
-            ),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  if (btnClicked != null) {
-                    btnClicked.call();
-                  }
-                },
-                child: Text(
-                  'Okay',
-                  style: style.copyWith(color: Colors.white),
-                ),
-                color: ColorPalette.primary,
-              )
-            ],
-          );
-        });
   }
 
   Future<void> loadingFailed(String message) async {
@@ -113,4 +67,47 @@ class UtilityProvider {
       toastError(message);
     }
   }
+}
+
+void showMessageWithDialog(String message, BuildContext context, [VoidCallback btnClicked]) {
+  showDialog<Widget>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32))),
+          title: Row(
+            // ignore: prefer_const_literals_to_create_immutables
+            children: <Widget>[
+              const Icon(
+                Icons.info,
+                color: ColorPalette.primary,
+              ),
+              const VerticalDivider(),
+              const Text(
+                'Message',
+                style: style,
+              )
+            ],
+          ),
+          content: Text(
+            message,
+            style: style,
+          ),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+                if (btnClicked != null) {
+                  btnClicked.call();
+                }
+              },
+              child: Text(
+                'Okay',
+                style: style.copyWith(color: Colors.white),
+              ),
+              color: ColorPalette.primary,
+            )
+          ],
+        );
+      });
 }

@@ -52,8 +52,9 @@ class FirebaseService {
     if (result?.status == FacebookLoginStatus.loggedIn) {
       final AuthCredential credential = FacebookAuthProvider.credential(result.accessToken.token);
       return await _auth?.signInWithCredential(credential);
-    } else
+    } else {
       return null;
+    }
   }
 
   Future<UserCredential> googleSignIn() async {
