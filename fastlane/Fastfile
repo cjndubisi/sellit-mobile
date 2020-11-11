@@ -45,10 +45,10 @@ platform :ios do
 
     options = options_for_branch
 
-    increment_build_number(xcodeproj: './ios/Runner.xcodeproj')
+    build_number = number_of_commits()
 
     # Required to build dart for gym
-    sh 'flutter build ios --release --no-codesign'
+    sh "flutter build ios --release --no-codesign --build-number=#{build_number}"
 
     gym(
       scheme: 'Runner',
@@ -68,6 +68,7 @@ platform :ios do
   lane :alpha do 
     firebase_app_distribution(
       app: ENV["FIREBASE_IOS_APP_ID"],
+      testers: "okechukwu.nwagba@reachzone.org, aniekan.umoh@reachzone.org,cjndubisi@reachzone.org",
       firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"],
       firebase_cli_path: "/usr/local/bin/firebase",
       ipa_path: "Runner.ipa"
@@ -91,10 +92,11 @@ platform :android do
   private_lane :build do
     # increment_build_number
     # gradle(task: 'incrementVersionCode', project_dir: 'android/')
+    build_number = number_of_commits()    
     
     sh("flutter", "clean")
     # sh("flutter", "build", "appbundle")
-    sh("flutter build apk --release")
+    sh("flutter build apk --release --build-number=#{build_number}")
   end
 
   desc 'Ship to FireBase App Distribution'
@@ -103,6 +105,7 @@ platform :android do
 
     firebase_app_distribution(
       app: ENV["FIREBASE_ANDROID_APP_ID"],
+      testers: "okechukwu.nwagba@reachzone.org, aniekan.umoh@reachzone.org,cjndubisi@reachzone.org",
       firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"],
       release_notes: "This is a test app",
       firebase_cli_path: "/usr/local/bin/firebase",
