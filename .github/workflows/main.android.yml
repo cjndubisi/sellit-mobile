@@ -5,8 +5,17 @@ on:
     branches: [master, develop]
 
 env:
-  flutter_version: '1.20.3'
+  flutter_version: '1.22.3'
   java_version: '12.x'
+  APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
+  FIREBASE_CLI_TOKEN: ${{ secrets.FIREBASE_CLI_TOKEN }}
+  FIREBASE_ANDROID_APP_ID: ${{ secrets.FIREBASE_IOS_APP_ID }}
+  FIREBASE_IOS_APP_ID: ${{ secrets.FIREBASE_IOS_APP_ID }}
+  MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+  FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
+  FASTLANE_SESSION: ${{ secrets.FASTLANE_SESSION }}
+  FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+  MATCH_KEYCHAIN_PASSWORD: ${{ secrets.MATCH_KEYCHAIN_PASSWORD }}
 
 jobs:
   distibute:
@@ -21,6 +30,15 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '12.x'
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dump-env
+        run: pip install dump-env
+
+      - name: Dump ENV
+        run: dump-env > .env # This will dump all GITHUB_ENV into env
+
       - uses: actions/setup-ruby@v1
         with:
           ruby-version: '2.6'
@@ -55,6 +73,3 @@ jobs:
 
       - name: Run fastlane and deploy to firebase app distribution
         run: bundle exec fastlane android alpha
-        env:
-          FIREBASE_CLI_TOKEN: ${{ secrets.FIREBASE_CLI_TOKEN }}
-          FIREBASE_ANDROID_APP_ID: ${{ secrets.FIREBASE_ANDROID_APP_ID }}

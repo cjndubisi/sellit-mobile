@@ -2,6 +2,11 @@ name: Run Unit Test
 
 on: pull_request
 
+env:
+  flutter_version: '1.22.3'
+  java_version: '12.x'
+  APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
+
 jobs:
   test:
     name: Run Unit Tests
@@ -9,11 +14,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
       - uses: actions/setup-ruby@v1
         with:
           ruby-version: '2.6'
 
-      # Caches
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dump-env
+        run: pip install dump-env
+
+      - name: Dump ENV
+        run: dump-env > .env # This will dump all GITHUB_ENV into env
+
       - name: Cache Flutter dependencies
         uses: actions/cache@v1
         with:
@@ -23,6 +38,5 @@ jobs:
         with:
           flutter-version: ${{ env.flutter_version }}
 
-      # Commands
       - run: flutter pub get
       - run: flutter test
