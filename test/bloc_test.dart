@@ -34,9 +34,12 @@ void main() {
   });
 
   group('auth bloc test', () {
+
+
     test('initial state is correct', () {
-      expect(authenticationBloc.initialState, UnInitialized());
+      expect(authenticationBloc.state, UnInitialized());
     });
+
 
     test('validate user signed in at app started', () {
       when(firebaseServiceMock.getCurrentUser()).thenAnswer((_) => FirebaseUserMock());

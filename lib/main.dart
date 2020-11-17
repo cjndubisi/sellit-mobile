@@ -36,14 +36,14 @@ class DI extends StatelessWidget {
         child: MultiBlocProvider(
           providers: [
             BlocProvider<AuthenticationBloc>(
-              create: (_) {
-                return AuthenticationBloc(service: _.repository<AuthService>());
+              create: (context) {
+                return AuthenticationBloc(service: context.repository<AuthService>())..add(AppStarted());
               },
             ),
-            BlocProvider<ListingBloc>(create: (_) {
+            BlocProvider<ListingBloc>(create: (context) {
               return ListingBloc(
-                service: _.repository<ListingService>(),
-                serviceProvider: _.repository<ServiceUtilityProvider>(),
+                service: context.repository<ListingService>(),
+                serviceProvider: context.repository<ServiceUtilityProvider>(),
               );
             }),
           ],

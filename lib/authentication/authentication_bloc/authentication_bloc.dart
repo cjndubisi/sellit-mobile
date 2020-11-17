@@ -13,18 +13,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   AuthenticationBloc({@required AuthService service})
       : assert(service != null),
         _service = service,
-        super(null);
+        super(UnInitialized());
 
   final AuthService _service;
-
-  AuthService get service => _service;
-
-  @override
-  Future<void> close() {
-    return super.close();
-  }
-
-  AuthenticationState get initialState => UnInitialized();
 
   @override
   Stream<AuthenticationState> mapEventToState(
@@ -33,7 +24,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     if (event is AppStarted) {
       yield* _mapAppStartedToState();
     } else if (event is LoggedIn) {
-      yield* _mapLoggedInToState();
+      yield Authenticated();
     } else if (event is LoggedOut) {
       yield* _mapLoggedOutToState();
     } else if (event is LoginWithGooglePressed) {
@@ -43,8 +34,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     } else if (event is LoginWithEmailPasswordPressed) {
       yield* _mapLoginWithEmailPassEvent(event.email, event.password);
     } else if (event is SubmitRegistrationPressed) {
-      yield* _mapRegisterUserToState(
-          event.email, event.fullname, event.phonenumber, event.password);
+      yield* _mapRegisterUserToState(event.email, event.fullname, event.phonenumber, event.password);
     } else if (event is OnBoardingCompleted) {
       yield* _mapOnBoardingCompletedToState();
     }
@@ -63,10 +53,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       yield UnAuthenticated();
       return;
     }
-    yield Authenticated();
-  }
-
-  Stream<AuthenticationState> _mapLoggedInToState() async* {
     yield Authenticated();
   }
 
@@ -103,8 +89,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   Stream<AuthenticationState> _mapLoginWithEmailPassEvent(String email, String password) async* {
     try {
       yield Loading();
-      final UserCredential credential =
-          await _service.verifyUser(email, password);
+      final UserCredential credential = await _service.verifyUser(email, password);
       if (credential != null)
         yield Successful();
       else
@@ -122,8 +107,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   ) async* {
     try {
       yield Loading();
-      final UserCredential credential =
-          await _service.registerUser(email, password, fullname, phonenumber);
+      final UserCredential credential = await _service.registerUser(email, password, fullname, phonenumber);
       if (credential != null)
         yield Successful();
       else
