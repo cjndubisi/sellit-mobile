@@ -33,10 +33,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                 globalBackgroundColor: Colors.transparent,
                 showNextButton: true,
                 showSkipButton: true,
-                skip: const Text(
-                  'Skip',
-                  key: ValueKey('skip_button'),
-                ),
+                skip: const Text('Skip', key: ValueKey('skip_button'),),
                 next: const Text('Next'),
                 done: const Text('Get Started'),
                 pages: getPages(),

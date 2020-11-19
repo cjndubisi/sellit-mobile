@@ -1,34 +1,22 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'firebase_service.dart';
 
 class AuthService {
-  AuthService({
-    FirebaseAuth firebase,
-    FacebookLogin facebook,
-    GoogleSignIn google,
-  }) : _auth = FirebaseService(
-          firebaseAuth: firebase,
-          facebookSignIn: facebook,
-          googleSignIn: google,
-        );
+  AuthService() : _firebaseService = FirebaseService();
 
   AuthService.fromFirebaseService(FirebaseService auth)
       : assert(auth != null),
-        _auth = auth;
+        _firebaseService = auth;
 
-  final FirebaseService _auth;
-
-  FirebaseAuth get auth => _auth.instance;
+  final FirebaseService _firebaseService;
 
   Future<void> signOut() async {
-    return await _auth.signOut();
+    return await _firebaseService.signOut();
   }
 
   User getUser() {
-    return _auth.getCurrentUser();
+    return _firebaseService.getCurrentUser();
   }
 
   bool isSignedIn() {
@@ -37,7 +25,7 @@ class AuthService {
 
   Future<UserCredential> facebookSignIn() async {
     try {
-      final UserCredential response = await _auth.facebookSignIn();
+      final UserCredential response = await _firebaseService.facebookSignIn();
       return response;
     } on Exception catch (e) {
       return throw CustomException(e.toString());
@@ -46,7 +34,7 @@ class AuthService {
 
   Future<UserCredential> googleSignIn() async {
     try {
-      final UserCredential response = await _auth.googleSignIn();
+      final UserCredential response = await _firebaseService.googleSignIn();
       return response;
     } on Exception catch (e) {
       return throw CustomException(e.toString());
@@ -55,7 +43,7 @@ class AuthService {
 
   Future<UserCredential> verifyUser(String email, String password) async {
     try {
-      final UserCredential response = await _auth.signInWithEmailPassword(email, password);
+      final UserCredential response = await _firebaseService.signInWithEmailPassword(email, password);
       return response;
     } on Exception catch (e) {
       return throw CustomException(e.toString());
@@ -64,7 +52,7 @@ class AuthService {
 
   Future<UserCredential> registerUser(String email, String password, String fullName, String phoneno) async {
     try {
-      final UserCredential user = await _auth.registerNewUser(email, password);
+      final UserCredential user = await _firebaseService.registerNewUser(email, password);
       // TODO(handleRegisteredUser): Grab the returned user and send to server/save to FireStore
       return user;
     } on Exception catch (e) {
@@ -73,7 +61,7 @@ class AuthService {
   }
 
   Future<void> forgotPassword(String email) async {
-    await _auth.forgotPassword(email);
+    await _firebaseService.forgotPassword(email);
   }
 }
 

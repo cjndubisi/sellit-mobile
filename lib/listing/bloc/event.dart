@@ -15,3 +15,10 @@ class ContactSellerEvent extends ListingEvent {
   final ContactSellerType _contactSellerType;
   final ItemEntity product;
 }
+
+class SearchEvent extends Equatable implements ListingEvent {
+  const SearchEvent([this._term = '']);
+  final String _term;
+  @override
+  List<Object> get props => [_term];
+}

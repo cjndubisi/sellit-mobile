@@ -1,15 +1,16 @@
 import 'dart:async';
 
+import 'package:flutter_starterkit_firebase/core/firestore_service.dart';
 import 'package:flutter_starterkit_firebase/model/item_entity.dart';
 
-import 'firebase_service.dart';
-
 class ListingService {
-  ListingService() : _auth = FirebaseService();
+  ListingService() : _fireStoreService = FirestoreService();
 
-  ListingService.fromFirebaseService(FirebaseService firebaseService) : _auth = firebaseService;
+  const ListingService.fromFirebaseService(FirestoreService fireStoreService) : _fireStoreService = fireStoreService;
 
-  final FirebaseService _auth;
+  final FirestoreService _fireStoreService;
 
-  Stream<List<ItemEntity>> get itemStream => _auth.itemStream;
+  Stream<List<ItemEntity>> get itemStream =>
+      _fireStoreService.collectionStream(path: 'items', builder: (data, _) => ItemEntity.fromJson(data));
+
 }
