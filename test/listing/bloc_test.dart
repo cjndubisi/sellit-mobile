@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:bloc_test/bloc_test.dart';
-import 'package:flutter_starterkit_firebase/core/firebase_service.dart';
 import 'package:flutter_starterkit_firebase/listing/bloc/bloc.dart';
 import 'package:flutter_starterkit_firebase/utils/service_utility.dart';
 import 'package:path/path.dart';
@@ -17,7 +16,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   ListingBloc listingBloc;
 
-  ListingService _authService;
+  ListingService _listingService;
   FirestoreServiceMock firestoreServiceMock;
 
   // From https://github.com/flutter/flutter/issues/20907#issuecomment-466185328
@@ -35,15 +34,10 @@ void main() {
     dummy = json.map((dynamic e) => ItemEntity.fromJson(e as Map<String, dynamic>)).toList();
 
     firestoreServiceMock = FirestoreServiceMock();
-    _authService = ListingService.fromFirebaseService(
-      FirebaseService(
-        firebaseAuth: FirebaseAuthMock(),
-        facebookSignIn: FacebookSignInMock(),
-        firestore: firestoreServiceMock,
-      ),
-    );
+    _listingService = ListingService.fromFirebaseService(firestoreServiceMock);
     serviceUtilityProviderMock = ServiceUtilityProviderMock();
-    listingBloc = ListingBloc(service: _authService, serviceProvider: serviceUtilityProviderMock);
+    listingBloc =
+        ListingBloc(service: _listingService, serviceProvider: serviceUtilityProviderMock);
   });
 
   tearDown(() {
@@ -70,11 +64,11 @@ void main() {
       listingBloc.add(InActiveSearch());
 
       // Expect
-      listingBloc.itemStream.listen(
-        expectAsync1((List<ItemEntity> event) {
-          expect(event.first.price, dummy.first.price);
-        }, max: 1),
-      );
+      listingBloc.getItemStream().listen(
+            expectAsync1((List<ItemEntity> event) {
+              expect(event.first.price, dummy.first.price);
+            }, max: 1),
+          );
 
       expect(
         listingBloc,
@@ -105,7 +99,7 @@ void main() {
         ContactSellerType.whatsapp,
         dummy.first,
       )),
-      expect: [isA<StartLoading>(), isA<ContactSellerState>()],
+      expect: [isA<IsLoading>(), isA<ContactSellerState>()],
     );
 
     blocTest<ListingBloc, ListingState>(
@@ -121,7 +115,109 @@ void main() {
         ContactSellerType.whatsapp,
         dummy.first,
       )),
-      expect: [isA<StartLoading>(), isA<LoadingFailed>()],
+      expect: [isA<IsLoading>(), isA<LoadingFailed>()],
     );
+  });
+
+  group('search bloc', () {
+    test('load items successfully', () {
+      final streamController = StreamController<List<ItemEntity>>.broadcast();
+      when(firestoreServiceMock.collectionStream<ItemEntity>(
+              path: 'items', builder: anyNamed('builder')))
+          .thenAnswer((_) => streamController.stream);
+
+      Timer(const Duration(seconds: 1), () {
+        streamController.add(dummy);
+      });
+
+      // Act
+      listingBloc.add(SearchEvent());
+
+      listingBloc.getItemStream().listen(
+            expectAsync1((List<ItemEntity> event) {
+              expect(event.first.price, dummy.first.price);
+            }, max: 1),
+          );
+
+      expect(
+        listingBloc,
+        emits(isA<SearchingState>()),
+      );
+    });
+
+    test('search items successfully', () {
+      final streamController = StreamController<List<ItemEntity>>.broadcast();
+      when(firestoreServiceMock.collectionStream<ItemEntity>(
+              path: 'items', builder: anyNamed('builder')))
+          .thenAnswer((_) => streamController.stream);
+
+      Timer(const Duration(seconds: 1), () {
+        streamController.add(dummy);
+      });
+
+      // Act
+      listingBloc.add(SearchEvent(''));
+
+      listingBloc.getItemStream().listen(
+            expectAsync1((List<ItemEntity> event) {
+              expect(event.first.price, dummy.first.price);
+            }, max: 1),
+          );
+
+      expect(
+        listingBloc,
+        emits(isA<SearchingState>()),
+      );
+    });
+
+    test('returns full list on empty string', () {
+      final streamController = StreamController<List<ItemEntity>>.broadcast();
+      when(firestoreServiceMock.collectionStream<ItemEntity>(
+              path: 'items', builder: anyNamed('builder')))
+          .thenAnswer((_) => streamController.stream);
+
+      Timer(const Duration(seconds: 1), () {
+        streamController.add(dummy);
+      });
+
+      // Act
+      listingBloc.add(SearchEvent(''));
+
+      listingBloc.getItemStream().listen(
+            expectAsync1((List<ItemEntity> items) {
+              expect(items.length, dummy.length);
+            }, max: 1),
+          );
+    });
+
+    test('returns filtered list by search text', () async {
+      final streamController = StreamController<List<ItemEntity>>.broadcast();
+      when(firestoreServiceMock.collectionStream<ItemEntity>(
+              path: 'items', builder: anyNamed('builder')))
+          .thenAnswer((_) {
+        return streamController.stream;
+      });
+
+      listingBloc.add(SearchEvent('Apple'));
+
+      // .add takes a while for event to pass thought
+      await Future.delayed(const Duration(seconds: 1), () {});
+
+      expect(listingBloc.state, SearchingState('Apple'));
+
+      // Act
+      listingBloc.getItemStream().listen(
+            expectAsync1((List<ItemEntity> items) {
+              print(items.length);
+              expect(items.length, 1);
+              expect(items.first.title.contains('Apple'), true);
+            }, max: 1),
+          );
+
+      // cause emit on .listen
+      Timer(const Duration(milliseconds: 50), () {
+        streamController.add(dummy);
+      });
+    });
   });
 }

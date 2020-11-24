@@ -15,7 +15,7 @@ class ItemEntity {
 
   ItemEntity.fromJson(Map<String, dynamic> json)
       : id = json['_uid'].toString(),
-        author = User(name:json['author'].toString() , number: 'fsdfasd'),
+        author = User(name: json['author'].toString(), number: 'fsdfasd'),
         title = json['title'].toString(),
         description = json['description'].toString(),
         price = double.parse(json['price'].toString()),

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 
 import 'package:flutter_starterkit_firebase/core/listing_service.dart';
 import 'package:flutter_starterkit_firebase/model/item_entity.dart';
@@ -19,7 +20,26 @@ class ListingBloc extends Bloc<ListingEvent, ListingState> {
 
   final ListingService _service;
   final ServiceUtilityProvider _util;
-  Stream<List<ItemEntity>> get itemStream => _service.itemStream;
+
+  Stream<List<ItemEntity>> getItemStream() {
+    if (state is SearchingState) {
+      if ((state as SearchingState).term.isEmpty) {
+        return _service.itemStream;
+      }
+
+      return _searchItem((state as SearchingState).term);
+    } else {
+      return _service.itemStream;
+    }
+  }
+
+  Stream<List<ItemEntity>> _searchItem([String term = '']) =>
+      _service.itemStream?.map((event) => event
+          .where((element) =>
+              element.author.name.contains(term) ||
+              element.title.contains(term) ||
+              element.description.contains(term))
+          .toList());
 
   @override
   Stream<ListingState> mapEventToState(ListingEvent event) async* {
@@ -29,16 +49,22 @@ class ListingBloc extends Bloc<ListingEvent, ListingState> {
       yield NavigateToDetail(event._itemEntity);
     } else if (event is ContactSellerEvent) {
       yield* _mapToContactSellerEvent(event);
+    } else if (event is SearchEvent) {
+      yield* _mapToSearchingEvent(event);
     }
   }
 
   Stream<ListingState> _mapToContactSellerEvent(ContactSellerEvent event) async* {
     try {
-      yield StartLoading();
+      yield IsLoading();
       _util.sendSms(event._contactSellerType, event.product);
       yield ContactSellerState();
     } catch (e) {
       yield LoadingFailed(e.toString());
     }
+  }
+
+  Stream<ListingState> _mapToSearchingEvent(SearchEvent event) async* {
+    yield SearchingState(event._term);
   }
 }

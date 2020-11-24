@@ -9,7 +9,7 @@ class NavigateToDetail extends ListingState {
   final ItemEntity itemEntity;
 }
 
-class StartLoading extends ListingState {}
+class IsLoading extends ListingState {}
 
 class LoadingFailed extends ListingState {
   LoadingFailed(this.msg);
@@ -17,3 +17,13 @@ class LoadingFailed extends ListingState {
 }
 
 class ContactSellerState extends ListingState {}
+
+class SearchInitial extends ListingState {}
+
+class SearchingState extends Equatable implements ListingState {
+  const SearchingState(this.term);
+  final String term;
+
+  @override
+  List<Object> get props => [term];
+}

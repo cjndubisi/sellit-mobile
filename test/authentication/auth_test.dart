@@ -1,7 +1,7 @@
 import 'package:flutter_starterkit_firebase/core/auth_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'mocks/firebase_auth_mock.dart';
+import '../mocks/firebase_auth_mock.dart';
 
 final FirebaseAuthMock firebaseAuthMock = FirebaseAuthMock();
 final GoogleSignInMock googleSignInMock = GoogleSignInMock();
@@ -58,6 +58,14 @@ void main() {
       );
 
       await _authService.googleSignIn();
+    });
+
+    test('signInWithFacebook', () async {
+      when(firebaseServiceMock.facebookSignIn()).thenAnswer(
+            (_) => Future<FirebaseMockAuthResult>.value(firebaseMockAuthResult),
+      );
+
+      await _authService.facebookSignIn();
     });
   });
 }

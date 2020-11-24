@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_starterkit_firebase/authentication/authentication_bloc/authentication_bloc.dart';
 import 'package:flutter_starterkit_firebase/core/auth_service.dart';
 import 'package:flutter_starterkit_firebase/utils/constants.dart';
@@ -6,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'mocks/firebase_auth_mock.dart';
+import '../mocks/firebase_auth_mock.dart';
 
 final FirebaseAuthMock firebaseAuthMock = FirebaseAuthMock();
 final GoogleSignInMock googleSignInMock = GoogleSignInMock();
@@ -17,7 +16,7 @@ final GoogleUserMock googleUserMock = GoogleUserMock();
 final AuthService auth = AuthService();
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
+  TestWidgetsFlutterBinding.ensureInitialized();
   AuthenticationBloc authenticationBloc;
   AuthService _authService;
   FirebaseAuthServiceMock firebaseServiceMock;
@@ -34,12 +33,9 @@ void main() {
   });
 
   group('auth bloc test', () {
-
-
     test('initial state is correct', () {
       expect(authenticationBloc.state, UnInitialized());
     });
-
 
     test('validate user signed in at app started', () {
       when(firebaseServiceMock.getCurrentUser()).thenAnswer((_) => FirebaseUserMock());

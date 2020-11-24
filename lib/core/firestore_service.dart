@@ -3,7 +3,8 @@ import 'package:flutter/foundation.dart';
 
 // https://github.com/bizz84/codewithandrea_flutter_packages/blob/master/packages/firestore_service/lib/firestore_service.dart
 class FirestoreService {
-  FirestoreService({FirebaseFirestore firestore}) : _firestore = firestore ?? FirebaseFirestore.instance;
+  FirestoreService({FirebaseFirestore firestore})
+      : _firestore = firestore ?? FirebaseFirestore.instance;
 
   final FirebaseFirestore _firestore;
 
@@ -52,4 +53,5 @@ class FirestoreService {
     final Stream<DocumentSnapshot> snapshots = reference.snapshots();
     return snapshots.map((snapshot) => builder(snapshot.data(), snapshot.id));
   }
+
 }
