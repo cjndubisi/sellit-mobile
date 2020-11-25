@@ -17,7 +17,27 @@ jobs:
 
       - uses: actions/setup-ruby@v1
         with:
-          ruby-version: '2.6'
+          ruby-version: "2.6"
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dump-env
+        run: pip install dump-env
+
+      - name: Dump ENV
+        run: dump-env > .env # This will dump all GITHUB_ENV into env
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dump-env
+        run: pip install dump-env
+
+      - name: Dump ENV
+        run: dump-env > .env # This will dump all GITHUB_ENV into env
 
       - uses: actions/setup-python@v2
         with:

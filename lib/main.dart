@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_starterkit_firebase/authentication/forgot_password/forgot_password_screen.dart';
 import 'package:flutter_starterkit_firebase/authentication/register/register_screen.dart';
 import 'package:flutter_starterkit_firebase/core/listing_service.dart';
@@ -19,6 +20,7 @@ import 'core/navigation_service.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await DotEnv().load();
   runApp(DI());
 }
 

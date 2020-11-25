@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_starterkit_firebase/model/item_entity.dart';
+import 'package:flutter_starterkit_firebase/utils/config.dart';
 import 'package:url_launcher/url_launcher.dart' show launch;
 
 class ServiceUtilityProvider {
-  // TODO(okechukwu): move to base URL Config.BASEURL
-  final String _baseURL = 'https://sell.it';
+  final String _baseURL = Config.baseUrl;
 
   String _generateSMSURI({
     @required String number,
