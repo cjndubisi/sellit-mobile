@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_starterkit_firebase/utils/constants.dart';
+import 'package:intl/intl.dart';
 import '../model/user.dart';
 
 class ItemEntity {
@@ -11,6 +13,7 @@ class ItemEntity {
     @required this.price,
     @required this.location,
     @required this.type,
+    this.state = Constants.Draft,
     @required this.dateCreated,
     this.images = const [],
   });
@@ -29,6 +32,7 @@ class ItemEntity {
       location: map['location'].toString(),
       type: map['type'].toString(),
       dateCreated: map['dateCreated'] as int,
+      state: map['state'].toString(),
       images: List<String>.from(map['images'] as List ?? []),
     );
   }
@@ -41,6 +45,7 @@ class ItemEntity {
   final String location;
   final String type;
   final int dateCreated;
+  final String state;
   final List<String> images;
 
   Map<String, dynamic> toMap() {
@@ -53,6 +58,7 @@ class ItemEntity {
       'location': location,
       'type': type,
       'dateCreated': dateCreated,
+      'state': state,
       'images': images,
     };
   }
@@ -67,6 +73,7 @@ class ItemEntity {
     String location,
     String type,
     int dateCreated,
+    String state,
     List<String> images,
   }) {
     return ItemEntity(
@@ -78,9 +85,12 @@ class ItemEntity {
       location: location ?? this.location,
       type: type ?? this.type,
       dateCreated: dateCreated ?? this.dateCreated,
+      state: state ?? this.state,
       images: images ?? this.images,
     );
   }
+
+  String get formattedDateCreated => DateFormat.yMMMd().format(DateTime.fromMillisecondsSinceEpoch(dateCreated * 1000));
 
   String toJson() => json.encode(toMap());
 

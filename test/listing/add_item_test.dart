@@ -13,8 +13,7 @@ import 'package:mockito/mockito.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:path/path.dart';
 
-import '../mocks/firebase_auth_mock.dart';
-import '../mocks/mocks.dart';
+import '../mocks.dart';
 
 void main() {
   setupFirebaseAuthMocks();

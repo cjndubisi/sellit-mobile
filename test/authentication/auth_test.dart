@@ -1,7 +1,9 @@
 import 'package:flutter_starterkit_firebase/core/auth_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import '../mocks/firebase_auth_mock.dart';
+
+import '../mocks.dart';
+
 
 final FirebaseAuthMock firebaseAuthMock = FirebaseAuthMock();
 final GoogleSignInMock googleSignInMock = GoogleSignInMock();

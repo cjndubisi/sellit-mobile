@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_starterkit_firebase/utils/constants.dart';
 import 'package:flutter_starterkit_firebase/utils/resources.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:progress_dialog/progress_dialog.dart';
@@ -46,7 +47,8 @@ class UtilityProvider {
     _progressDialog.update(message: message);
   }
 
-  void loadingSuccessful(String message, [bool showDialog = false, BuildContext context, VoidCallback btnClicked]) {
+  void loadingSuccessful(String message,
+      [bool showDialog = false, BuildContext context, VoidCallback btnClicked]) {
     if (_progressDialog != null && _progressDialog.isShowing())
       _progressDialog.hide().then((bool isHidden) {
         if (message != null) {
@@ -59,12 +61,72 @@ class UtilityProvider {
       });
   }
 
+  void showMessageWithDialog(String message, BuildContext context, [VoidCallback btnClicked]) {
+    showDialog<Widget>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape:
+                const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32))),
+            title: Row(
+              // ignore: prefer_const_literals_to_create_immutables
+              children: <Widget>[
+                const Icon(
+                  Icons.info,
+                  color: ColorPalette.primary,
+                ),
+                const VerticalDivider(),
+                const Text(
+                  'Message',
+                  style: style,
+                )
+              ],
+            ),
+            content: Text(
+              message,
+              style: style,
+            ),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  if (btnClicked != null) {
+                    btnClicked.call();
+                  }
+                },
+                child: Text(
+                  'Okay',
+                  style: style.copyWith(color: Colors.white),
+                ),
+                color: ColorPalette.primary,
+              )
+            ],
+          );
+        });
+  }
+
   Future<void> loadingFailed(String message) async {
     if (_progressDialog != null) {
       await _progressDialog.hide();
     }
     if (message != null) {
       toastError(message);
+    }
+  }
+
+  Color getColor(String state) {
+    switch (state) {
+      case Constants.Draft:
+        return Colors.red;
+        break;
+      case Constants.Live:
+        return Colors.green;
+        break;
+      case Constants.Sold:
+        return Colors.blue;
+        break;
+      default:
+        return null;
     }
   }
 }

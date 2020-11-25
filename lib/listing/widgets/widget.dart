@@ -3,8 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starterkit_firebase/listing/bloc/bloc.dart';
+
 import 'package:flutter_starterkit_firebase/model/item_entity.dart';
 import 'package:flutter_starterkit_firebase/utils/resources.dart';
+
 
 class ListItemWidget extends StatelessWidget {
   const ListItemWidget(this._itemEntity);

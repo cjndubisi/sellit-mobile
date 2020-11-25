@@ -4,7 +4,7 @@ import 'package:flutter_starterkit_firebase/model/user.dart';
 import 'package:flutter_starterkit_firebase/utils/service_utility.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'mocks/firebase_auth_mock.dart';
+import 'mocks.dart';
 
 void main() async {
   TestWidgetsFlutterBinding.ensureInitialized();

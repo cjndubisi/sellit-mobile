@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_starterkit_firebase/core/auth_service.dart';
 import 'package:flutter_starterkit_firebase/core/item_service.dart';
-
 import 'package:flutter_starterkit_firebase/model/item_entity.dart';
 import 'package:flutter_starterkit_firebase/utils/service_utility.dart';
 import 'package:meta/meta.dart';
@@ -12,21 +10,17 @@ part 'event.dart';
 part 'state.dart';
 
 class ListingBloc extends Bloc<ListingEvent, ListingState> {
-  ListingBloc(
-      {@required ItemService service,
-      @required ServiceUtilityProvider serviceProvider,
-      @required AuthService authService})
-      : assert(service != null),
+  ListingBloc({
+    @required ItemService service,
+    @required ServiceUtilityProvider serviceProvider,
+  })  : assert(service != null),
         assert(serviceProvider != null),
-        assert(authService != null),
-        _authService = authService,
         _service = service,
         _util = serviceProvider,
         super(InitialState());
 
   final ItemService _service;
   final ServiceUtilityProvider _util;
-  final AuthService _authService;
 
   Stream<List<ItemEntity>> getItemStream() {
     if (state is SearchingState) {
@@ -55,8 +49,6 @@ class ListingBloc extends Bloc<ListingEvent, ListingState> {
       yield* _mapToContactSellerEvent(event);
     } else if (event is SearchEvent) {
       yield* _mapToSearchingEvent(event);
-    } else if (event is LogOutEvent) {
-      yield* _mapToLogOutEvent();
     }
   }
 
@@ -65,16 +57,6 @@ class ListingBloc extends Bloc<ListingEvent, ListingState> {
       yield IsLoading();
       _util.sendSms(event._contactSellerType, event.product);
       yield ContactSellerState();
-    } catch (e) {
-      yield LoadingFailed(e.toString());
-    }
-  }
-
-  Stream<ListingState> _mapToLogOutEvent() async* {
-    try {
-      yield IsLoading();
-      await _authService.signOut();
-      yield LogOut();
     } catch (e) {
       yield LoadingFailed(e.toString());
     }

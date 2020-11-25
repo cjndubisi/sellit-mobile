@@ -2,30 +2,21 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:flutter_starterkit_firebase/model/item_entity.dart';
 import 'package:flutter_starterkit_firebase/model/user.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import 'firestore_service.dart';
-
 class FirebaseService {
   FirebaseService({
-    FirestoreService firestoreService,
     FirebaseAuth firebaseAuth,
     FacebookLogin facebookSignIn,
     GoogleSignIn googleSignIn,
   })  : _auth = firebaseAuth ?? FirebaseAuth.instance,
         _facebookLogin = facebookSignIn ?? FacebookLogin(),
-        _googleSignIn = googleSignIn ?? GoogleSignIn(),
-        _firestoreService = firestoreService;
+        _googleSignIn = googleSignIn ?? GoogleSignIn();
 
   final FirebaseAuth _auth;
   final FacebookLogin _facebookLogin;
   final GoogleSignIn _googleSignIn;
-  final FirestoreService _firestoreService;
-
-  Stream<List<ItemEntity>> get itemStream => _firestoreService.collectionStream(
-      path: 'items', builder: (data, _) => ItemEntity.fromMap(data));
 
   FirebaseAuth get instance => _auth;
 
@@ -60,10 +51,10 @@ class FirebaseService {
   }
 
   Future<UserCredential> googleSignIn() async {
-    final googleUser = await _googleSignIn.signIn();
-    final googleAuth = await googleUser.authentication;
-    final AuthCredential authCredential = GoogleAuthProvider.credential(
-        idToken: googleAuth?.idToken, accessToken: googleAuth?.accessToken);
+    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final AuthCredential authCredential =
+        GoogleAuthProvider.credential(idToken: googleAuth?.idToken, accessToken: googleAuth?.accessToken);
     return await _auth.signInWithCredential(authCredential);
   }
 

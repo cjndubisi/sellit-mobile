@@ -12,5 +12,6 @@ mixin FirebaseServices {
 abstract class ItemService {
   Stream<List<ItemEntity>> get itemStream;
   Future<List<ItemEntity>> getItems();
+  Future<List<ItemEntity>> getItemsByState(String state);
   Future<void> addItem(ItemEntity item, List<Asset> images);
 }
