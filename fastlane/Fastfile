@@ -70,7 +70,6 @@ platform :ios do
       app: ENV["FIREBASE_IOS_APP_ID"],
       testers: "okechukwu.nwagba@reachzone.org, aniekan.umoh@reachzone.org,cjndubisi@reachzone.org",
       firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"],
-      firebase_cli_path: "/usr/local/bin/firebase",
       ipa_path: "Runner.ipa"
     )
 
@@ -90,12 +89,9 @@ platform :android do
 
   desc 'Build the Flutter application.'
   private_lane :build do
-    # increment_build_number
-    # gradle(task: 'incrementVersionCode', project_dir: 'android/')
     build_number = number_of_commits()    
     
     sh("flutter", "clean")
-    # sh("flutter", "build", "appbundle")
     sh("flutter build apk --release --build-number=#{build_number}")
   end
 
@@ -105,10 +101,9 @@ platform :android do
 
     firebase_app_distribution(
       app: ENV["FIREBASE_ANDROID_APP_ID"],
-      testers: "okechukwu.nwagba@reachzone.org, aniekan.umoh@reachzone.org,cjndubisi@reachzone.org",
+      testers: "okechukwu.nwagba@reachzone.org, aniekan.umoh@reachzone.org, cjndubisi@reachzone.org",
       firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"],
       release_notes: "This is a test app",
-      firebase_cli_path: "/usr/local/bin/firebase",
       apk_path: "./build/app/outputs/flutter-apk/app-release.apk"
     )
 
