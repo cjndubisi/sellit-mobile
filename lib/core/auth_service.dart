@@ -36,7 +36,7 @@ class AuthService {
     try {
       final UserCredential response = await _firebaseService.googleSignIn();
       return response;
-    } on Exception catch (e) {
+    } on Exception catch (e) { 
       return throw CustomException(e.toString());
     }
   }

@@ -28,29 +28,31 @@ class DI extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<AuthService>(create: (_) => AuthService()),
+        RepositoryProvider<NavigationService>(create: (_) => NavigationService()),
+        RepositoryProvider<UtilityProvider>(create: (_) => UtilityProvider()),
+        RepositoryProvider(create: (_) => ServiceUtilityProvider()),
+        RepositoryProvider<ListingService>(create: (_) => ListingService())
+      ],
+      child: MultiBlocProvider(
         providers: [
-          RepositoryProvider<AuthService>(create: (_) => AuthService()),
-          RepositoryProvider<NavigationService>(create: (_) => NavigationService()),
-          RepositoryProvider<UtilityProvider>(create: (_) => UtilityProvider()),
-          RepositoryProvider(create: (_) => ServiceUtilityProvider()),
-          RepositoryProvider<ListingService>(create: (_) => ListingService())
+          BlocProvider<AuthenticationBloc>(
+            create: (context) {
+              return AuthenticationBloc(service: context.repository<AuthService>())
+                ..add(AppStarted());
+            },
+          ),
+          BlocProvider<ListingBloc>(create: (context) {
+            return ListingBloc(
+              service: context.repository<ListingService>(),
+              serviceProvider: context.repository<ServiceUtilityProvider>(),
+            );
+          }),
         ],
-        child: MultiBlocProvider(
-          providers: [
-            BlocProvider<AuthenticationBloc>(
-              create: (context) {
-                return AuthenticationBloc(service: context.repository<AuthService>())..add(AppStarted());
-              },
-            ),
-            BlocProvider<ListingBloc>(create: (context) {
-              return ListingBloc(
-                service: context.repository<ListingService>(),
-                serviceProvider: context.repository<ServiceUtilityProvider>(),
-              );
-            }),
-          ],
-          child: MyApp(),
-        ));
+        child: MyApp(),
+      ),
+    );
   }
 }
 
@@ -59,6 +61,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final _navService = context.repository<NavigationService>();
     return MaterialApp(
+      navigatorKey: _navService.key,
       theme: ThemeData(
         primarySwatch: Colors.green,
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -70,6 +73,7 @@ class MyApp extends StatelessWidget {
             case UnInitialized:
               return WelcomeScreen();
             case UnAuthenticated:
+              // return LoginScreen();
             case Authenticated:
               return ListingScreen();
             default:
@@ -86,7 +90,6 @@ class MyApp extends StatelessWidget {
         '/dashboard': (BuildContext context) => ListingScreen(),
         '/dashboard/detail': (BuildContext context) => DetailScreen(),
       },
-      navigatorKey: _navService.key,
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter_starterkit_firebase/core/navigation_service.dart';
 import 'package:flutter_starterkit_firebase/listing/bloc/bloc.dart';
 import 'package:flutter_starterkit_firebase/listing/widgets/widget.dart';
 import 'package:flutter_starterkit_firebase/model/item_entity.dart';
@@ -17,10 +18,15 @@ class _LisitingPage extends State<LisitingPage> {
   @override
   Widget build(BuildContext context) {
     final ListingBloc _listingBloc = context.bloc<ListingBloc>();
+    final NavigationService _navigationService = context.repository<NavigationService>();
     return BlocBuilder<ListingBloc, ListingState>(
       builder: (BuildContext context, ListingState state) {
         return Scaffold(
-          appBar: _buildAppBar(context, state),
+          appBar: _buildAppBar(
+            context,
+            state,
+            _navigationService.navigateTo('/login'),
+          ),
           body: StreamBuilder<List<ItemEntity>>(
             stream: _listingBloc.getItemStream(),
             builder: (BuildContext context, AsyncSnapshot<List<ItemEntity>> snapshot) {
@@ -28,7 +34,8 @@ class _LisitingPage extends State<LisitingPage> {
                 return StaggeredGridView.countBuilder(
                   crossAxisCount: snapshot.data.length ~/ 2,
                   itemCount: snapshot.data.length,
-                  itemBuilder: (BuildContext context, int index) => ListItemWidget(snapshot.data[index]),
+                  itemBuilder: (BuildContext context, int index) =>
+                      ListItemWidget(snapshot.data[index]),
                   staggeredTileBuilder: (int index) => StaggeredTile.count(2, index.isEven ? 2 : 1),
                   mainAxisSpacing: 4.0,
                   crossAxisSpacing: 4.0,
@@ -50,7 +57,7 @@ class _LisitingPage extends State<LisitingPage> {
     );
   }
 
-  AppBar _buildAppBar(BuildContext context, ListingState state) {
+  AppBar _buildAppBar(BuildContext context, ListingState state, Future navigate) {
     final ListingBloc _listingBloc = context.bloc<ListingBloc>();
     if (state is SearchingState) {
       return AppBar(
@@ -90,7 +97,11 @@ class _LisitingPage extends State<LisitingPage> {
         IconButton(
           icon: Icon(Icons.search),
           onPressed: () async => _listingBloc.add(SearchEvent()),
-        )
+        ),
+        // IconButton(
+        //   icon: Icon(Icons.portrait_rounded),
+        //   onPressed: () async => await navigate,
+        // )
       ],
     );
   }

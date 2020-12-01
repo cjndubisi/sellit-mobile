@@ -34,7 +34,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     } else if (event is LoginWithEmailPasswordPressed) {
       yield* _mapLoginWithEmailPassEvent(event.email, event.password);
     } else if (event is SubmitRegistrationPressed) {
-      yield* _mapRegisterUserToState(event.email, event.fullname, event.phonenumber, event.password);
+      yield* _mapRegisterUserToState(
+          event.email, event.fullname, event.phonenumber, event.password);
     } else if (event is OnBoardingCompleted) {
       yield* _mapOnBoardingCompletedToState();
     }
@@ -64,10 +65,11 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   Stream<AuthenticationState> _mapLoginWithGoogleEvent() async* {
     try {
       yield Loading();
-      // ignore: unused_local_variable
       final UserCredential credential = await _service.googleSignIn();
-
-      yield Successful();
+      if (credential != null)
+        yield Successful();
+      else
+        yield const Failed(message: 'Google sign in fails!');
     } on CustomException catch (e) {
       yield Failed(message: e.cause);
     }
@@ -107,7 +109,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   ) async* {
     try {
       yield Loading();
-      final UserCredential credential = await _service.registerUser(email, password, fullname, phonenumber);
+      final UserCredential credential =
+          await _service.registerUser(email, password, fullname, phonenumber);
       if (credential != null)
         yield Successful();
       else
