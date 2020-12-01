@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:bloc_test/bloc_test.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_starterkit_firebase/core/auth_service.dart';
 import 'package:flutter_starterkit_firebase/listing/bloc/bloc.dart';
 import 'package:flutter_starterkit_firebase/utils/service_utility.dart';
@@ -14,7 +15,11 @@ import '../mocks/firebase_auth_mock.dart';
 import '../mocks/mocks.dart';
 
 void main() {
+  setupFirebaseAuthMocks();
   TestWidgetsFlutterBinding.ensureInitialized();
+  setUpAll(() async {
+    await Firebase.initializeApp();
+  });
   ListingBloc listingBloc;
 
   ListingService _listingService;
@@ -36,15 +41,17 @@ void main() {
     _authService = AuthService.fromFirebaseService(firebaseServiceMock);
     final str = await _loadFromAsset();
     final json = jsonDecode(str) as List<dynamic>;
-    dummy = json.map((dynamic e) => ItemEntity.fromJson(e as Map<String, dynamic>)).toList();
+    dummy = json.map((dynamic e) => ItemEntity.fromMap(e as Map<String, dynamic>)).toList();
 
     firestoreServiceMock = FirestoreServiceMock();
-    _listingService = ListingService.fromFirebaseService(firestoreServiceMock);
+
+    _listingService = ListingService(
+      firebaseStorageService: FirebaseStorageServiceMock(),
+      firestoreService: firestoreServiceMock,
+    );
     serviceUtilityProviderMock = ServiceUtilityProviderMock();
-    listingBloc = ListingBloc(
-        service: _listingService,
-        serviceProvider: serviceUtilityProviderMock,
-        authService: _authService);
+    listingBloc =
+        ListingBloc(service: _listingService, serviceProvider: serviceUtilityProviderMock, authService: _authService);
   });
 
   tearDown(() {
@@ -59,8 +66,7 @@ void main() {
     test('load item successfully', () async {
       // Prepare
       final streamController = StreamController<List<ItemEntity>>.broadcast();
-      when(firestoreServiceMock.collectionStream<ItemEntity>(
-              path: 'items', builder: anyNamed('builder')))
+      when(firestoreServiceMock.collectionStream<ItemEntity>(path: 'items', builder: anyNamed('builder')))
           .thenAnswer((_) => streamController.stream);
 
       Timer(const Duration(seconds: 1), () {
@@ -86,13 +92,13 @@ void main() {
     test('navigate to detail page successfully', () async {
       final String str = await _loadFromAsset();
       final List<dynamic> json = jsonDecode(str) as List<dynamic>;
-      final List<ItemEntity> dummy =
-          json.map((dynamic e) => ItemEntity.fromJson(e as Map<String, dynamic>)).toList();
+      final List<ItemEntity> dummy = json.map((dynamic e) => ItemEntity.fromMap(e as Map<String, dynamic>)).toList();
 
       listingBloc.add(ListItemClickEvent(dummy.first));
 
       expect(listingBloc, emits(isA<NavigateToDetail>()));
     });
+
     blocTest<ListingBloc, ListingState>(
       'Contact Seller success',
       build: () {
@@ -107,6 +113,7 @@ void main() {
         dummy.first,
       )),
       expect: [isA<IsLoading>(), isA<ContactSellerState>()],
+      verify: (bloc) => verify(serviceUtilityProviderMock.sendSms(ContactSellerType.whatsapp, dummy.first)).called(1),
     );
 
     blocTest<ListingBloc, ListingState>(
@@ -129,8 +136,7 @@ void main() {
   group('search bloc', () {
     test('load items successfully', () {
       final streamController = StreamController<List<ItemEntity>>.broadcast();
-      when(firestoreServiceMock.collectionStream<ItemEntity>(
-              path: 'items', builder: anyNamed('builder')))
+      when(firestoreServiceMock.collectionStream<ItemEntity>(path: 'items', builder: anyNamed('builder')))
           .thenAnswer((_) => streamController.stream);
 
       Timer(const Duration(seconds: 1), () {
@@ -154,8 +160,7 @@ void main() {
 
     test('search items successfully', () {
       final streamController = StreamController<List<ItemEntity>>.broadcast();
-      when(firestoreServiceMock.collectionStream<ItemEntity>(
-              path: 'items', builder: anyNamed('builder')))
+      when(firestoreServiceMock.collectionStream<ItemEntity>(path: 'items', builder: anyNamed('builder')))
           .thenAnswer((_) => streamController.stream);
 
       Timer(const Duration(seconds: 1), () {
@@ -179,8 +184,7 @@ void main() {
 
     test('returns full list on empty string', () {
       final streamController = StreamController<List<ItemEntity>>.broadcast();
-      when(firestoreServiceMock.collectionStream<ItemEntity>(
-              path: 'items', builder: anyNamed('builder')))
+      when(firestoreServiceMock.collectionStream<ItemEntity>(path: 'items', builder: anyNamed('builder')))
           .thenAnswer((_) => streamController.stream);
 
       Timer(const Duration(seconds: 1), () {
@@ -199,10 +203,13 @@ void main() {
 
     test('returns filtered list by search text', () async {
       final streamController = StreamController<List<ItemEntity>>.broadcast();
-      when(firestoreServiceMock.collectionStream<ItemEntity>(
-              path: 'items', builder: anyNamed('builder')))
+      when(firestoreServiceMock.collectionStream<ItemEntity>(path: 'items', builder: anyNamed('builder')))
           .thenAnswer((_) {
         return streamController.stream;
+      });
+
+      Timer(const Duration(seconds: 1), () {
+        streamController.add(dummy);
       });
 
       listingBloc.add(SearchEvent('Apple'));
@@ -216,13 +223,11 @@ void main() {
       listingBloc.getItemStream().listen(
             expectAsync1((List<ItemEntity> items) {
               print(items.length);
-              expect(items.length, 1);
               expect(items.first.title.contains('Apple'), true);
-            }, max: 1),
+            }, count: 1, max: 1),
           );
-
-      // cause emit on .listen
-      Timer(const Duration(milliseconds: 50), () {
+      // // cause emit on .listen
+      Timer(const Duration(milliseconds: 150), () {
         streamController.add(dummy);
       });
     });

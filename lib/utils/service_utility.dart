@@ -22,17 +22,22 @@ class ServiceUtilityProvider {
 
   String generateURI(ContactSellerType type, ItemEntity item) => type == ContactSellerType.sms
       ? _generateSMSURI(
-          number: item.author.number,
+          number: item.author.phoneNumber,
           body: 'I am interest in your product ${item.title}',
-          productId: item.id,
+          productId: item.uid,
         )
       : _generateWhatsAppURI(
-          number: item.author.number,
+          number: item.author.phoneNumber,
           body: 'I am interest in your product ${item.title}',
-          productId: item.id,
+          productId: item.uid,
         );
 
   Future<void> sendSms(ContactSellerType type, ItemEntity item) => launch(generateURI(type, item));
+
+  DateTime getCurrentDate() {
+    final now = DateTime.now();
+    return now;
+  }
 }
 
 enum ContactSellerType {

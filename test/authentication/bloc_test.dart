@@ -1,5 +1,6 @@
 import 'package:flutter_starterkit_firebase/authentication/authentication_bloc/authentication_bloc.dart';
 import 'package:flutter_starterkit_firebase/core/auth_service.dart';
+import 'package:flutter_starterkit_firebase/model/user.dart';
 import 'package:flutter_starterkit_firebase/utils/constants.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -9,7 +10,7 @@ import '../mocks/firebase_auth_mock.dart';
 
 final FirebaseAuthMock firebaseAuthMock = FirebaseAuthMock();
 final GoogleSignInMock googleSignInMock = GoogleSignInMock();
-final FacebookSignInMock facebookSignInMock = FacebookSignInMock();
+final FacebookLoginMock facebookSignInMock = FacebookLoginMock();
 
 final FirebaseMockAuthResult firebaseMockAuthResult = FirebaseMockAuthResult();
 final GoogleUserMock googleUserMock = GoogleUserMock();
@@ -38,7 +39,7 @@ void main() {
     });
 
     test('validate user signed in at app started', () {
-      when(firebaseServiceMock.getCurrentUser()).thenAnswer((_) => FirebaseUserMock());
+      when(firebaseServiceMock.getCurrentUser()).thenAnswer((_) => User(uid: '22'));
 
       expectLater(
         authenticationBloc,

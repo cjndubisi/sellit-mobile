@@ -13,7 +13,6 @@ class ListItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
- 
     final ListingBloc listingBloc = BlocProvider.of<ListingBloc>(context);
     return GestureDetector(
       child: Card(
@@ -25,13 +24,13 @@ class ListItemWidget extends StatelessWidget {
             size: 90,
             color: ColorPalette.white,
           ),
-          errorWidget: (BuildContext context, String url, dynamic error) =>
-              const Icon(
+          errorWidget: (BuildContext context, String url, dynamic error) => const Icon(
             Icons.image,
             size: 90,
           ),
           fit: BoxFit.cover,
           width: MediaQuery.of(context).size.width,
+          height: 100,
         ),
       ),
       onTap: () => listingBloc.add(ListItemClickEvent(_itemEntity)),

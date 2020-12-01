@@ -1,5 +1,6 @@
 import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide User;
+import 'package:flutter_starterkit_firebase/model/user.dart';
 import 'firebase_service.dart';
 
 class AuthService {
@@ -36,7 +37,7 @@ class AuthService {
     try {
       final UserCredential response = await _firebaseService.googleSignIn();
       return response;
-    } on Exception catch (e) { 
+    } on Exception catch (e) {
       return throw CustomException(e.toString());
     }
   }

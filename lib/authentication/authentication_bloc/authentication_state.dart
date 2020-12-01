@@ -7,12 +7,16 @@ abstract class AuthenticationState extends Equatable {
   List<Object> get props => <Object>[];
 }
 
-class AuthenticationInitial extends AuthenticationState{}
+class AuthenticationInitial extends AuthenticationState {}
+
 class UnInitialized extends AuthenticationState {}
 
 class UnAuthenticated extends AuthenticationState {}
 
-class Authenticated extends AuthenticationState {}
+class Authenticated extends AuthenticationState {
+  const Authenticated({this.user});
+  final User user;
+}
 
 class Loading extends AuthenticationState {}
 
@@ -26,4 +30,3 @@ class Failed extends AuthenticationState {
   @override
   List<Object> get props => <Object>[message];
 }
-

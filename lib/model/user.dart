@@ -1,41 +1,56 @@
-import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:flutter/foundation.dart';
 
-import 'package:equatable/equatable.dart';
-
-class User extends Equatable {
+class User {
   const User({
-    this.number,
+    @required this.uid,
+    this.email,
+    this.photoURL,
+    this.displayName,
     this.name,
-  });
+    this.phoneNumber,
+  }) : assert(uid != null, 'User can only be created with a non-null uid');
 
-  factory User.fromJson(String source) => User.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  factory User.fromMap(Map<String, dynamic> map) {
-    if (map == null) {
+  factory User.fromFirebaseUser(firebase_auth.User user) {
+    if (user == null) {
       return null;
     }
-
     return User(
-      number: map['number'].toString(),
-      name: map['name'].toString(),
+      uid: user.uid,
+      email: user.email,
+      displayName: user.displayName,
+      photoURL: user.photoURL,
+      phoneNumber: user.phoneNumber,
     );
   }
 
-  final String number;
-  final String name;
-
-  @override
-  List<Object> get props => [number, name];
-
-  @override
-  bool get stringify => true;
-
-  String toJson() => json.encode(toMap());
+  User.fromJson(Map<String, dynamic> json)
+      : uid = json['uid'].toString(),
+        email = json['email'].toString(),
+        name = json['name'].toString(),
+        displayName = json['displayName'].toString(),
+        photoURL = json['photoURL'].toString(),
+        phoneNumber = json['phoneNumber'].toString();
 
   Map<String, dynamic> toMap() {
     return {
-      'number': number,
+      'uid': uid,
+      'email': email,
+      'photoURL': photoURL,
       'name': name,
+      'displayName': displayName,
+      'phoneNumber': phoneNumber,
     };
   }
+
+  final String uid;
+  final String name;
+  final String email;
+  final String photoURL;
+  final String displayName;
+  final String phoneNumber;
+
+  @override
+  String toString() =>
+      'uid: $uid, email: $email, photoUrl: $photoURL, name: $name, displayName: $displayName, phoneNumber: $phoneNumber';
 }

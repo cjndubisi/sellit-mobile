@@ -5,7 +5,7 @@ import '../mocks/firebase_auth_mock.dart';
 
 final FirebaseAuthMock firebaseAuthMock = FirebaseAuthMock();
 final GoogleSignInMock googleSignInMock = GoogleSignInMock();
-final FacebookSignInMock facebookSignInMock = FacebookSignInMock();
+final FacebookLoginMock facebookSignInMock = FacebookLoginMock();
 final GoogleUserMock googleUserMock = GoogleUserMock();
 final FirebaseMockAuthResult firebaseMockAuthResult = FirebaseMockAuthResult();
 final FirebaseAuthServiceMock firebaseServiceMock = FirebaseAuthServiceMock();
