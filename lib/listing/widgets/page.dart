@@ -12,7 +12,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ListingBloc listingBloc = BlocProvider.of<ListingBloc>(context);
-    final NavigationService navigationService = context.repository<NavigationService>();
+    final NavigationService navigationService = context.read<NavigationService>();
     return BlocListener<ListingBloc, ListingState>(
       listener: (BuildContext context, ListingState state) {
         switch (state.runtimeType) {

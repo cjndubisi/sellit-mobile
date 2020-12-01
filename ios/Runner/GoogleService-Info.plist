@@ -3,23 +3,23 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>160592341115-dpj7rp8vm7th3ikv8s03og09o2etr596.apps.googleusercontent.com</string>
+	<string>1027218685073-uhspfbnha7i1rfoudgtrk3529r9cdnqg.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.160592341115-dpj7rp8vm7th3ikv8s03og09o2etr596</string>
+	<string>com.googleusercontent.apps.1027218685073-uhspfbnha7i1rfoudgtrk3529r9cdnqg</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>160592341115-rs81rtqbruopni3mkp3m2rh37q5nbnvk.apps.googleusercontent.com</string>
+	<string>1027218685073-kdfiimaekbr79t91melsbud91he27ujm.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyCAWOypZiy8-wb24gXz8YALVK8EPFlUsQc</string>
+	<string>AIzaSyCcJ6wrWXM_T_6TPa5F729G1An6rukuP58</string>
 	<key>GCM_SENDER_ID</key>
-	<string>160592341115</string>
+	<string>1027218685073</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.flutterStarterkitFirebase</string>
+	<string>com.reachzone.sellit</string>
 	<key>PROJECT_ID</key>
-	<string>starterkit-789fc</string>
+	<string>sellit-f02a0</string>
 	<key>STORAGE_BUCKET</key>
-	<string>starterkit-789fc.appspot.com</string>
+	<string>sellit-f02a0.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -31,8 +31,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:160592341115:ios:d6a19c9578ac8277155ade</string>
+	<string>1:1027218685073:ios:6eeba9e7a58e047b635330</string>
 	<key>DATABASE_URL</key>
-	<string>https://starterkit-789fc.firebaseio.com</string>
+	<string>https://sellit-f02a0.firebaseio.com</string>
 </dict>
 </plist>

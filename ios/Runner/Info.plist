@@ -60,30 +60,29 @@
   <string>fbauth2</string>
   <string>fbshareextension</string>
 </array>
-
 <key>CFBundleURLTypes</key>
 <array>
-<!--  Facebok -->
+<!--  Facebook -->
+
   <dict>
   <key>CFBundleURLSchemes</key>
   <array>
-    <string>fb397954234529334</string>
+    <string>fb1261939183855336</string>
   </array>
   </dict>
-	<!-- Google -->
+		<!-- Google -->
 	<dict>
     		<key>CFBundleTypeRole</key>
     		<string>Editor</string>
     		<key>CFBundleURLSchemes</key>
     		<array>
-    			<string>com.googleusercontent.apps.160592341115-dpj7rp8vm7th3ikv8s03og09o2etr596</string>
+    			<string>com.googleusercontent.apps.1027218685073-uhspfbnha7i1rfoudgtrk3529r9cdnqg</string>
     		</array>
     	</dict>
 </array>
-
 <key>FacebookAppID</key>
-<string>397954234529334</string>
+<string>1261939183855336</string>
 <key>FacebookDisplayName</key>
-<string>StarterKit</string>
+<string>Sellit</string>
 </dict>
 </plist>

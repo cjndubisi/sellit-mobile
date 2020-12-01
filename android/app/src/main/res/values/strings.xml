@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Sellit.</string>
-
-    <string name="facebook_app_id">397954234529334</string>
-
-    <string name="fb_login_protocol_scheme">fb397954234529334</string>
+    <string name="facebook_app_id">1261939183855336</string>
+    <string name="fb_login_protocol_scheme">fb1261939183855336</string>
 </resources>

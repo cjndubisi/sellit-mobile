@@ -4,15 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_starterkit_firebase/authentication/forgot_password/forgot_password_screen.dart';
-import 'package:flutter_starterkit_firebase/authentication/register/register_screen.dart';
+import 'package:flutter_starterkit_firebase/authentication/login/login_form.dart';
+import 'package:flutter_starterkit_firebase/authentication/register/register_form.dart';
 import 'package:flutter_starterkit_firebase/core/listing_service.dart';
-import 'package:flutter_starterkit_firebase/listing/widgets/screen.dart';
+import 'package:flutter_starterkit_firebase/listing/widgets/listing.dart';
 import 'package:flutter_starterkit_firebase/listing/bloc/bloc.dart';
 import 'package:flutter_starterkit_firebase/listing/detail/detail_screen.dart';
+import 'package:flutter_starterkit_firebase/splash.dart';
 import 'package:flutter_starterkit_firebase/utils/utility.dart';
 import 'package:flutter_starterkit_firebase/utils/service_utility.dart';
 import 'authentication/authentication_bloc/authentication_bloc.dart';
-import 'authentication/login/login_screen.dart';
 import 'authentication/onboarding/onboarding_page.dart';
 import 'core/auth_service.dart';
 import 'core/navigation_service.dart';
@@ -39,14 +40,13 @@ class DI extends StatelessWidget {
         providers: [
           BlocProvider<AuthenticationBloc>(
             create: (context) {
-              return AuthenticationBloc(service: context.repository<AuthService>())
-                ..add(AppStarted());
+              return AuthenticationBloc(service: context.read<AuthService>())..add(AppStarted());
             },
           ),
           BlocProvider<ListingBloc>(create: (context) {
             return ListingBloc(
-              service: context.repository<ListingService>(),
-              serviceProvider: context.repository<ServiceUtilityProvider>(),
+              service: context.read<ListingService>(),
+              serviceProvider: context.read<ServiceUtilityProvider>(),
             );
           }),
         ],
@@ -59,7 +59,7 @@ class DI extends StatelessWidget {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final _navService = context.repository<NavigationService>();
+    final _navService = context.watch<NavigationService>();
     return MaterialApp(
       navigatorKey: _navService.key,
       theme: ThemeData(
@@ -67,27 +67,28 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       title: 'SellIt',
-      home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-        builder: (BuildContext context, AuthenticationState state) {
+      home: BlocListener<AuthenticationBloc, AuthenticationState>(
+        listener: (BuildContext context, AuthenticationState state) async {
           switch (state.runtimeType) {
             case UnInitialized:
-              return WelcomeScreen();
+              await _navService.setRootRoute('/welcome');
+              break;
             case UnAuthenticated:
-              // return LoginScreen();
+              await _navService.setRootRoute('/login');
+              break;
             case Authenticated:
-              return ListingScreen();
-            default:
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              await _navService.setRootRoute('/dashboard');
+              break;
           }
         },
+        child: Splash(),
       ),
       routes: <String, WidgetBuilder>{
-        '/login': (BuildContext context) => LoginScreen(),
-        '/register': (BuildContext context) => RegisterScreen(),
+        '/welcome': (BuildContext context) => WelcomeScreen(),
+        '/login': (BuildContext context) => LoginForm(),
+        '/register': (BuildContext context) => RegisterForm(),
         '/forgot_password': (BuildContext context) => ForgotPasswordScreen(),
-        '/dashboard': (BuildContext context) => ListingScreen(),
+        '/dashboard': (BuildContext context) => LisitingPage(),
         '/dashboard/detail': (BuildContext context) => DetailScreen(),
       },
     );

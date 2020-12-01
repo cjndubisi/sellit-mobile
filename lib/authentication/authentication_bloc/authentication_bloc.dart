@@ -34,8 +34,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     } else if (event is LoginWithEmailPasswordPressed) {
       yield* _mapLoginWithEmailPassEvent(event.email, event.password);
     } else if (event is SubmitRegistrationPressed) {
-      yield* _mapRegisterUserToState(
-          event.email, event.fullname, event.phonenumber, event.password);
+      yield* _mapRegisterUserToState(event.email, event.fullname, event.phonenumber, event.password);
     } else if (event is OnBoardingCompleted) {
       yield* _mapOnBoardingCompletedToState();
     }
@@ -47,11 +46,12 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       yield UnInitialized();
       return;
     }
-
     final User user = _service.getUser();
 
     if (user == null) {
-      yield UnAuthenticated();
+      // yield UnAuthenticated();
+      yield UnInitialized();
+
       return;
     }
     yield Authenticated();
@@ -67,7 +67,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       yield Loading();
       final UserCredential credential = await _service.googleSignIn();
       if (credential != null)
-        yield Successful();
+        yield Authenticated();
       else
         yield const Failed(message: 'Google sign in fails!');
     } on CustomException catch (e) {
@@ -80,7 +80,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       yield Loading();
       final UserCredential credential = await _service.facebookSignIn();
       if (credential != null)
-        yield Successful();
+        yield Authenticated();
       else
         yield const Failed(message: 'Facebook sign in fails!');
     } on CustomException catch (e) {
@@ -93,7 +93,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       yield Loading();
       final UserCredential credential = await _service.verifyUser(email, password);
       if (credential != null)
-        yield Successful();
+        yield Authenticated();
       else
         yield const Failed(message: 'Incorrect email or password!');
     } on CustomException catch (e) {
@@ -109,10 +109,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   ) async* {
     try {
       yield Loading();
-      final UserCredential credential =
-          await _service.registerUser(email, password, fullname, phonenumber);
+      final UserCredential credential = await _service.registerUser(email, password, fullname, phonenumber);
       if (credential != null)
-        yield Successful();
+        yield Authenticated();
       else
         yield const Failed(message: 'Incorrect email or password!');
     } on CustomException catch (e) {

@@ -54,7 +54,7 @@ void main() {
 
       expectLater(
         authenticationBloc,
-        emitsInOrder(<AuthenticationState>[Loading(), Successful()]),
+        emitsInOrder(<AuthenticationState>[Loading(), Authenticated()]),
       );
 
       authenticationBloc.add(LoginWithEmailPasswordPressed(email: 'adex9ja2@gmail.com', password: '1111'));
@@ -78,7 +78,7 @@ void main() {
 
       expectLater(
         authenticationBloc,
-        emitsInOrder(<AuthenticationState>[Loading(), Successful()]),
+        emitsInOrder(<AuthenticationState>[Loading(), Authenticated()]),
       );
 
       authenticationBloc.add(SubmitRegistrationPressed(
@@ -91,7 +91,7 @@ void main() {
 
       expectLater(
         authenticationBloc,
-        emitsInOrder(<AuthenticationState>[Loading(), Successful()]),
+        emitsInOrder(<AuthenticationState>[Loading(), Authenticated()]),
       );
 
       authenticationBloc.add(SubmitRegistrationPressed(
