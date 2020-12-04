@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1027218685073-kdfiimaekbr79t91melsbud91he27ujm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.reachzone.sellit",
+            "certificate_hash": "cbfd5bf9842b3a0d06c38fc753d3f389e28db8d0"
+          }
+        },
+        {
           "client_id": "1027218685073-lctjlkv52uilnu44omr1c6jmv26qvqft.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

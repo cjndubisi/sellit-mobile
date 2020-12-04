@@ -23,18 +23,18 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  bloc: ^6.0.3
+  bloc: ^6.1.0
   cached_network_image: ^2.1.0+1
   carousel_slider: ^2.0.0
-  cloud_firestore: ^0.14.0+2
+  cloud_firestore: 0.14.3+1
   cupertino_icons: ^1.0.0
   enum_to_string: ^1.0.13
-  equatable: ^1.2.0
+  equatable: ^1.2.5
   firebase_auth: ^0.18.0+1
   firebase_core: ^0.5.0
   firebase_crashlytics: ^0.2.1
   firebase_storage: ^4.0.1
-  flutter_bloc: ^6.0.5
+  flutter_bloc: ^6.1.0
   flutter_dotenv: ^2.1.0
   flutter_facebook_login: ^3.0.0
   flutter_staggered_grid_view: ^0.3.2
@@ -54,10 +54,9 @@ dev_dependencies:
     sdk: flutter
   flutter_test:
     sdk: flutter
-  bloc_test: ^7.0.4
+  bloc_test: ^7.1.0
   pedantic: ^1.8.0
   plugin_platform_interface: ^1.0.2
-
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

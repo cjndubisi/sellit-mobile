@@ -46,11 +46,12 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       yield UnInitialized();
       return;
     }
-
     final User user = _service.getUser();
 
     if (user == null) {
-      yield UnAuthenticated();
+      // yield UnAuthenticated();
+      yield UnInitialized();
+
       return;
     }
     yield Authenticated();
@@ -64,10 +65,11 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   Stream<AuthenticationState> _mapLoginWithGoogleEvent() async* {
     try {
       yield Loading();
-      // ignore: unused_local_variable
       final UserCredential credential = await _service.googleSignIn();
-
-      yield Successful();
+      if (credential != null)
+        yield Authenticated();
+      else
+        yield const Failed(message: 'Google sign in fails!');
     } on CustomException catch (e) {
       yield Failed(message: e.cause);
     }
@@ -78,7 +80,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       yield Loading();
       final UserCredential credential = await _service.facebookSignIn();
       if (credential != null)
-        yield Successful();
+        yield Authenticated();
       else
         yield const Failed(message: 'Facebook sign in fails!');
     } on CustomException catch (e) {
@@ -91,7 +93,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       yield Loading();
       final UserCredential credential = await _service.verifyUser(email, password);
       if (credential != null)
-        yield Successful();
+        yield Authenticated();
       else
         yield const Failed(message: 'Incorrect email or password!');
     } on CustomException catch (e) {
@@ -109,7 +111,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       yield Loading();
       final UserCredential credential = await _service.registerUser(email, password, fullname, phonenumber);
       if (credential != null)
-        yield Successful();
+        yield Authenticated();
       else
         yield const Failed(message: 'Incorrect email or password!');
     } on CustomException catch (e) {

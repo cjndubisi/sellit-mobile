@@ -35,6 +35,7 @@
 .pub-cache/
 .pub/
 /build/
+ios/build/
 
 key.jks 
 

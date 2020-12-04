@@ -24,7 +24,7 @@ class _ForgotPasswordForm extends State<ForgotPasswordForm> {
 
   @override
   Widget build(BuildContext context) {
-    final UtilityProvider _utilityProvider = context.repository<UtilityProvider>();
+    final UtilityProvider _utilityProvider = context.read<UtilityProvider>();
     final TextFormField emailText = TextFormField(
       onSaved: (String value) => _email = value.trim(),
       keyboardType: TextInputType.text,

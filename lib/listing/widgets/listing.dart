@@ -16,14 +16,22 @@ class _LisitingPage extends State<LisitingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final ListingBloc _listingBloc = context.bloc<ListingBloc>();
+    final ListingBloc _listingBloc = context.watch<ListingBloc>();
+
     return BlocBuilder<ListingBloc, ListingState>(
       builder: (BuildContext context, ListingState state) {
         return Scaffold(
-          appBar: _buildAppBar(context, state),
+          appBar: _buildAppBar(
+            context,
+            state,
+          ),
           body: StreamBuilder<List<ItemEntity>>(
             stream: _listingBloc.getItemStream(),
             builder: (BuildContext context, AsyncSnapshot<List<ItemEntity>> snapshot) {
+              if (!snapshot.hasData) {
+                return Center(child: Text('No Data'));
+              }
+
               if (snapshot.hasData && snapshot.data != null && snapshot.data.isNotEmpty) {
                 return StaggeredGridView.countBuilder(
                   crossAxisCount: snapshot.data.length ~/ 2,
@@ -51,7 +59,7 @@ class _LisitingPage extends State<LisitingPage> {
   }
 
   AppBar _buildAppBar(BuildContext context, ListingState state) {
-    final ListingBloc _listingBloc = context.bloc<ListingBloc>();
+    final ListingBloc _listingBloc = context.watch<ListingBloc>();
     if (state is SearchingState) {
       return AppBar(
         leading: IconButton(
@@ -90,7 +98,7 @@ class _LisitingPage extends State<LisitingPage> {
         IconButton(
           icon: Icon(Icons.search),
           onPressed: () async => _listingBloc.add(SearchEvent()),
-        )
+        ),
       ],
     );
   }

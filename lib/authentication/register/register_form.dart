@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starterkit_firebase/authentication/authentication_bloc/authentication_bloc.dart';
+import 'package:flutter_starterkit_firebase/core/navigation_service.dart';
 import 'package:flutter_starterkit_firebase/utils/resources.dart';
-import 'package:flutter_starterkit_firebase/utils/utility.dart';
 
 class RegisterForm extends StatefulWidget {
   @override
@@ -30,7 +30,7 @@ class _RegisterForm extends State<RegisterForm> {
 
   @override
   Widget build(BuildContext context) {
-    final UtilityProvider _utilityProvider = context.repository<UtilityProvider>();
+    final NavigationService _navService = context.watch<NavigationService>();
     final TextFormField emailText = TextFormField(
       onSaved: (String value) => _email = value.trim(),
       keyboardType: TextInputType.text,
@@ -81,7 +81,7 @@ class _RegisterForm extends State<RegisterForm> {
     );
     final passwordText = TextFormField(
       onSaved: (String value) => _password = value.trim(),
-      keyboardType: TextInputType.number,
+      keyboardType: TextInputType.text,
       decoration: const InputDecoration(
         fillColor: Colors.white,
         filled: true,
@@ -109,61 +109,84 @@ class _RegisterForm extends State<RegisterForm> {
         ),
       ),
     );
-    return BlocListener<AuthenticationBloc, AuthenticationState>(
+    return BlocConsumer<AuthenticationBloc, AuthenticationState>(
       listener: (BuildContext context, AuthenticationState state) async {
-        if (state is Loading) {
-          await _utilityProvider.startLoading(context);
-        } else if (state is Successful) {
-          _registerBLoc.add(LoggedIn());
-          _utilityProvider.loadingSuccessful(null);
-        } else if (state is Failed) {
-          _utilityProvider.loadingFailed(state.message);
+        if (state is Authenticated) {
+          _navService.setRootRoute('/dashboard');
+        }
+        if (state is Failed) {
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Center(
+              child: Column(
+                children: const [
+                  Text('Login Error'),
+                  Text('Something went wrong please try again'),
+                ],
+              ),
+            ),
+          ));
         }
       },
-      child: SingleChildScrollView(
-        child: Container(
-          alignment: Alignment.topLeft,
-          padding: const EdgeInsets.all(20),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  'Email Address',
-                  style: style.copyWith(fontWeight: FontWeight.bold),
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Registration'),
+          ),
+          body: SingleChildScrollView(
+            child: Container(
+              alignment: Alignment.topLeft,
+              padding: const EdgeInsets.all(20),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Email Address',
+                      style: style.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    Sizing.small,
+                    emailText,
+                    Sizing.medium,
+                    Text(
+                      'Phone Number',
+                      style: style.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    Sizing.small,
+                    phoneText,
+                    Sizing.medium,
+                    Text(
+                      'Full Name',
+                      style: style.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    Sizing.small,
+                    fullNameText,
+                    Sizing.fab,
+                    Text(
+                      'Password',
+                      style: style.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    Sizing.small,
+                    passwordText,
+                    Sizing.fab,
+                    if (state is Loading)
+                      Row(
+                        children: [
+                          Spacer(),
+                          CircularProgressIndicator(),
+                          Spacer(),
+                        ],
+                      )
+                    else
+                      registerBtn
+                  ],
                 ),
-                Sizing.small,
-                emailText,
-                Sizing.medium,
-                Text(
-                  'Phone Number',
-                  style: style.copyWith(fontWeight: FontWeight.bold),
-                ),
-                Sizing.small,
-                phoneText,
-                Sizing.medium,
-                Text(
-                  'Full Name',
-                  style: style.copyWith(fontWeight: FontWeight.bold),
-                ),
-                Sizing.small,
-                fullNameText,
-                Sizing.fab,
-                Text(
-                  'Password',
-                  style: style.copyWith(fontWeight: FontWeight.bold),
-                ),
-                Sizing.small,
-                passwordText,
-                Sizing.fab,
-                registerBtn
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

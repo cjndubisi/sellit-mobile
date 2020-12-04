@@ -11,7 +11,9 @@ class User extends Equatable {
   factory User.fromJson(String source) => User.fromMap(json.decode(source) as Map<String, dynamic>);
 
   factory User.fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
+    if (map == null) {
+      return null;
+    }
 
     return User(
       number: map['number'].toString(),
