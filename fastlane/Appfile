@@ -1,5 +1,5 @@
 # iOS
-app_identifier("com.example.flutterStarterkitFirebase") # The bundle identifier of your app
+app_identifier("com.reachzone.sellit") # The bundle identifier of your app
 apple_id("chijinx@icloud.com") # Your Apple email address
 
 itc_team_id("118708610") # App Store Connect Team ID
@@ -10,4 +10,4 @@ team_id("M9399PEWF4") # Developer Portal Team ID
 # Android 
 # ------------
 json_key_file("") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
-package_name("com.example.flutter_starterkit_firebase") # e.g. com.krausefx.app
+package_name("com.reachzone.sellit") # e.g. com.krausefx.app
