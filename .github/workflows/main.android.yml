@@ -28,11 +28,7 @@ jobs:
         run: |
           git config --global user.email "devops@reachzone.org"
           git config --global user.name "Chijioke Ndubisi"
-      - uses: webfactory/ssh-agent@v0.4.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }} #
       - uses: actions/checkout@v2
-
       - name: setup java
         uses: actions/setup-java@v1
         with:
