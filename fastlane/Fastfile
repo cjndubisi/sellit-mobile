@@ -4,11 +4,11 @@ skip_docs
 
 platform :ios do
   private_lane :bundle_id_for_branch do
-    'com.example.flutterStarterkitFirebase'
+    'com.reachzone.sellit'
   end
 
   private_lane :options_for_branch do | options |
-    identifier = "com.example.flutterStarterkitFirebase"
+    identifier = "com.reachzone.sellit"
     {
       app_identifier: identifier,
       export_type: git_branch == 'master' ? 'app-store' : 'ad-hoc',
