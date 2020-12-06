@@ -52,9 +52,7 @@ jobs:
       # Actions
       - run: git config --global user.email "devops@reachzone.org"
       - run: git config --global user.name "Chijioke Ndubisi"
-      - uses: webfactory/ssh-agent@v0.4.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
       - uses: actions/checkout@v2
       - uses: actions/setup-ruby@v1
         with:
