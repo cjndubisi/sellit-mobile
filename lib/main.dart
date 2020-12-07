@@ -47,6 +47,7 @@ class DI extends StatelessWidget {
             return ListingBloc(
               service: context.read<ListingService>(),
               serviceProvider: context.read<ServiceUtilityProvider>(),
+              authService: context.read<AuthService>(),
             );
           }),
         ],

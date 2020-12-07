@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter_starterkit_firebase/core/navigation_service.dart';
 import 'package:flutter_starterkit_firebase/listing/bloc/bloc.dart';
 import 'package:flutter_starterkit_firebase/listing/widgets/widget.dart';
 import 'package:flutter_starterkit_firebase/model/item_entity.dart';
@@ -17,8 +18,13 @@ class _LisitingPage extends State<LisitingPage> {
   @override
   Widget build(BuildContext context) {
     final ListingBloc _listingBloc = context.watch<ListingBloc>();
-
-    return BlocBuilder<ListingBloc, ListingState>(
+    final NavigationService _navigationService = context.watch<NavigationService>();
+    return BlocConsumer<ListingBloc, ListingState>(
+      listener: (contex, state) {
+        if (state is LogOut) {
+          _navigationService.setRootRoute('/login');
+        }
+      },
       builder: (BuildContext context, ListingState state) {
         return Scaffold(
           appBar: _buildAppBar(
@@ -36,7 +42,8 @@ class _LisitingPage extends State<LisitingPage> {
                 return StaggeredGridView.countBuilder(
                   crossAxisCount: snapshot.data.length ~/ 2,
                   itemCount: snapshot.data.length,
-                  itemBuilder: (BuildContext context, int index) => ListItemWidget(snapshot.data[index]),
+                  itemBuilder: (BuildContext context, int index) =>
+                      ListItemWidget(snapshot.data[index]),
                   staggeredTileBuilder: (int index) => StaggeredTile.count(2, index.isEven ? 2 : 1),
                   mainAxisSpacing: 4.0,
                   crossAxisSpacing: 4.0,
@@ -98,6 +105,10 @@ class _LisitingPage extends State<LisitingPage> {
         IconButton(
           icon: Icon(Icons.search),
           onPressed: () async => _listingBloc.add(SearchEvent()),
+        ),
+        IconButton(
+          icon: Icon(Icons.logout),
+          onPressed: () async => _listingBloc.add(LogOutEvent()),
         ),
       ],
     );

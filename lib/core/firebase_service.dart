@@ -49,6 +49,9 @@ class FirebaseService {
 
   Future<UserCredential> googleSignIn() async {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+    if (googleUser == null) {
+      return null;
+    }
     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
     final AuthCredential authCredential =
         GoogleAuthProvider.credential(idToken: googleAuth?.idToken, accessToken: googleAuth?.accessToken);

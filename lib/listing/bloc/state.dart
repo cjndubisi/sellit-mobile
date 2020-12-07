@@ -11,6 +11,8 @@ class NavigateToDetail extends ListingState {
 
 class IsLoading extends ListingState {}
 
+class LogOut extends ListingState {}
+
 class LoadingFailed extends ListingState {
   LoadingFailed(this.msg);
   final String msg;
