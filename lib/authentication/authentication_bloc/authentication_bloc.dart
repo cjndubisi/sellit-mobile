@@ -49,9 +49,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     final User user = _service.getUser();
 
     if (user == null) {
-      // yield UnAuthenticated();
-      yield UnInitialized();
-
+      yield UnAuthenticated();
       return;
     }
     yield Authenticated();

@@ -22,3 +22,5 @@ class SearchEvent extends Equatable implements ListingEvent {
   @override
   List<Object> get props => [_term];
 }
+
+class LogOutEvent implements ListingEvent {}

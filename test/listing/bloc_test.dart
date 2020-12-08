@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:bloc_test/bloc_test.dart';
+import 'package:flutter_starterkit_firebase/core/auth_service.dart';
 import 'package:flutter_starterkit_firebase/listing/bloc/bloc.dart';
 import 'package:flutter_starterkit_firebase/utils/service_utility.dart';
 import 'package:path/path.dart';
@@ -28,7 +29,11 @@ void main() {
   List<ItemEntity> dummy;
 
   ServiceUtilityProviderMock serviceUtilityProviderMock;
+  AuthService _authService;
+  FirebaseAuthServiceMock firebaseServiceMock;
   setUp(() async {
+    firebaseServiceMock = FirebaseAuthServiceMock();
+    _authService = AuthService.fromFirebaseService(firebaseServiceMock);
     final str = await _loadFromAsset();
     final json = jsonDecode(str) as List<dynamic>;
     dummy = json.map((dynamic e) => ItemEntity.fromJson(e as Map<String, dynamic>)).toList();
@@ -36,8 +41,10 @@ void main() {
     firestoreServiceMock = FirestoreServiceMock();
     _listingService = ListingService.fromFirebaseService(firestoreServiceMock);
     serviceUtilityProviderMock = ServiceUtilityProviderMock();
-    listingBloc =
-        ListingBloc(service: _listingService, serviceProvider: serviceUtilityProviderMock);
+    listingBloc = ListingBloc(
+        service: _listingService,
+        serviceProvider: serviceUtilityProviderMock,
+        authService: _authService);
   });
 
   tearDown(() {
@@ -219,5 +226,18 @@ void main() {
         streamController.add(dummy);
       });
     });
+
+    blocTest<ListingBloc, ListingState>(
+      'logout user from',
+      build: () {
+        when(_authService.signOut()).thenAnswer((_) async => null);
+        return listingBloc;
+      },
+      act: (bloc) async => bloc.add(LogOutEvent()),
+      expect: [isA<IsLoading>(), isA<LogOut>()],
+      verify: (_) {
+        verify(_authService.signOut()).called(1);
+      },
+    );
   });
 }
