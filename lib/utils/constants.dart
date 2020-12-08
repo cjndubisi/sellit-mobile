@@ -7,3 +7,9 @@ class Constants {
 
   static const List<String> choices = <String>[Live, Draft, Sold];
 }
+
+class Strings {
+  static const String passwordValidationError =
+      'must contain at least one uppercase letter , must contain at least one digit , must contain at least one special character';
+  static const String emailInputError = 'please enter a valid email';
+}

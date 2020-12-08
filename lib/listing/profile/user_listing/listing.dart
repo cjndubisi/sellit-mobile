@@ -16,8 +16,8 @@ class _UserItemsListingState extends State<UserItemsListing> {
   final List<Widget> tabBarViews = [];
   @override
   Widget build(BuildContext context) {
-    final _navigationService = context.repository<NavigationService>();
-    final ProfileBloc _profileBloc = context.bloc<ProfileBloc>();
+    final _navigationService = context.watch<NavigationService>();
+    final ProfileBloc _profileBloc = context.watch<ProfileBloc>();
     return DefaultTabController(
       length: 3,
       child: Scaffold(

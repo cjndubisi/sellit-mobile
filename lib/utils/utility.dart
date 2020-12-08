@@ -47,8 +47,7 @@ class UtilityProvider {
     _progressDialog.update(message: message);
   }
 
-  void loadingSuccessful(String message,
-      [bool showDialog = false, BuildContext context, VoidCallback btnClicked]) {
+  void loadingSuccessful(String message, [bool showDialog = false, BuildContext context, VoidCallback btnClicked]) {
     if (_progressDialog != null && _progressDialog.isShowing())
       _progressDialog.hide().then((bool isHidden) {
         if (message != null) {
@@ -66,8 +65,7 @@ class UtilityProvider {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape:
-                const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32))),
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32))),
             title: Row(
               // ignore: prefer_const_literals_to_create_immutables
               children: <Widget>[
@@ -172,4 +170,8 @@ void showMessageWithDialog(String message, BuildContext context, [VoidCallback b
           ],
         );
       });
+}
+
+T tryCast<T>(dynamic x) {
+  return x is T ? x : null;
 }
