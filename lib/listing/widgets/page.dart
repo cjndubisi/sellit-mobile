@@ -8,11 +8,10 @@ import 'package:flutter_starterkit_firebase/model/item_entity.dart';
 import 'package:flutter_starterkit_firebase/utils/resources.dart';
 
 class HomePage extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     final ListingBloc listingBloc = BlocProvider.of<ListingBloc>(context);
-    final NavigationService navigationService = context.read<NavigationService>();
+    final NavigationService navigationService = context.watch<NavigationService>();
     return BlocListener<ListingBloc, ListingState>(
       listener: (BuildContext context, ListingState state) {
         switch (state.runtimeType) {

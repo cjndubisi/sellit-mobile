@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' show UserCredential;
 import 'package:flutter_starterkit_firebase/core/auth_service.dart';
+import 'package:flutter_starterkit_firebase/model/user.dart';
 import 'package:flutter_starterkit_firebase/utils/repository.dart';
 import 'package:meta/meta.dart';
 
@@ -52,7 +53,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       yield UnAuthenticated();
       return;
     }
-    yield Authenticated();
+    yield Authenticated(user: user);
   }
 
   Stream<AuthenticationState> _mapLoggedOutToState() async* {
@@ -65,7 +66,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       yield Loading();
       final UserCredential credential = await _service.googleSignIn();
       if (credential != null)
-        yield Authenticated();
+        yield Authenticated(user: User.fromFirebaseUser(credential.user));
       else
         yield const Failed(message: 'Google sign in fails!');
     } on CustomException catch (e) {
@@ -78,7 +79,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       yield Loading();
       final UserCredential credential = await _service.facebookSignIn();
       if (credential != null)
-        yield Authenticated();
+        yield Authenticated(user: User.fromFirebaseUser(credential.user));
       else
         yield const Failed(message: 'Facebook sign in fails!');
     } on CustomException catch (e) {
@@ -91,7 +92,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       yield Loading();
       final UserCredential credential = await _service.verifyUser(email, password);
       if (credential != null)
-        yield Authenticated();
+        yield Authenticated(user: User.fromFirebaseUser(credential.user));
       else
         yield const Failed(message: 'Incorrect email or password!');
     } on CustomException catch (e) {
@@ -109,7 +110,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       yield Loading();
       final UserCredential credential = await _service.registerUser(email, password, fullname, phonenumber);
       if (credential != null)
-        yield Authenticated();
+        yield Authenticated(user: User.fromFirebaseUser(credential.user));
       else
         yield const Failed(message: 'Incorrect email or password!');
     } on CustomException catch (e) {

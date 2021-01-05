@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_starterkit_firebase/core/auth_service.dart';
+import 'package:flutter_starterkit_firebase/core/item_service.dart';
 
-import 'package:flutter_starterkit_firebase/core/listing_service.dart';
 import 'package:flutter_starterkit_firebase/model/item_entity.dart';
 import 'package:flutter_starterkit_firebase/utils/service_utility.dart';
 import 'package:meta/meta.dart';
@@ -13,7 +13,7 @@ part 'state.dart';
 
 class ListingBloc extends Bloc<ListingEvent, ListingState> {
   ListingBloc(
-      {@required ListingService service,
+      {@required ItemService service,
       @required ServiceUtilityProvider serviceProvider,
       @required AuthService authService})
       : assert(service != null),
@@ -24,7 +24,7 @@ class ListingBloc extends Bloc<ListingEvent, ListingState> {
         _util = serviceProvider,
         super(InitialState());
 
-  final ListingService _service;
+  final ItemService _service;
   final ServiceUtilityProvider _util;
   final AuthService _authService;
 
@@ -40,13 +40,10 @@ class ListingBloc extends Bloc<ListingEvent, ListingState> {
     }
   }
 
-  Stream<List<ItemEntity>> _searchItem([String term = '']) =>
-      _service.itemStream?.map((event) => event
-          .where((element) =>
-              element.author.name.contains(term) ||
-              element.title.contains(term) ||
-              element.description.contains(term))
-          .toList());
+  Stream<List<ItemEntity>> _searchItem([String term = '']) => _service.itemStream?.map((event) => event
+      .where((element) =>
+          element.author.name.contains(term) || element.title.contains(term) || element.description.contains(term))
+      .toList());
 
   @override
   Stream<ListingState> mapEventToState(ListingEvent event) async* {

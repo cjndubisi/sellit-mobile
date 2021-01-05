@@ -23,6 +23,8 @@ class _LisitingPage extends State<LisitingPage> {
       listener: (contex, state) {
         if (state is LogOut) {
           _navigationService.setRootRoute('/login');
+        } else if (state is NavigateToDetail) {
+          _navigationService.navigateTo('/dashboard/detail');
         }
       },
       builder: (BuildContext context, ListingState state) {
@@ -34,31 +36,33 @@ class _LisitingPage extends State<LisitingPage> {
           body: StreamBuilder<List<ItemEntity>>(
             stream: _listingBloc.getItemStream(),
             builder: (BuildContext context, AsyncSnapshot<List<ItemEntity>> snapshot) {
-              if (!snapshot.hasData) {
+              if (!snapshot.hasData || snapshot.data.isEmpty) {
                 return Center(child: Text('No Data'));
               }
 
-              if (snapshot.hasData && snapshot.data != null && snapshot.data.isNotEmpty) {
+              if (snapshot.hasData && snapshot.data.isNotEmpty) {
                 return StaggeredGridView.countBuilder(
-                  crossAxisCount: snapshot.data.length ~/ 2,
+                  crossAxisCount: 4,
                   itemCount: snapshot.data.length,
-                  itemBuilder: (BuildContext context, int index) =>
-                      ListItemWidget(snapshot.data[index]),
+                  itemBuilder: (BuildContext context, int index) => ListItemWidget(snapshot.data[index]),
                   staggeredTileBuilder: (int index) => StaggeredTile.count(2, index.isEven ? 2 : 1),
                   mainAxisSpacing: 4.0,
                   crossAxisSpacing: 4.0,
                 );
+              } else if (state is SearchingState) {
+                return Center(
+                  child: Text('Not found'),
+                );
               } else {
-                if (state is SearchingState) {
-                  return Center(
-                    child: Text('Not found'),
-                  );
-                }
                 return Center(
                   child: CircularProgressIndicator(),
                 );
               }
             },
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => _navigationService.navigateTo('/dashboard/add/item'),
+            child: const Icon(Icons.add),
           ),
         );
       },

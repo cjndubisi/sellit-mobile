@@ -7,6 +7,7 @@ import 'package:flutter_starterkit_firebase/authentication/forgot_password/forgo
 import 'package:flutter_starterkit_firebase/authentication/login/login_form.dart';
 import 'package:flutter_starterkit_firebase/authentication/register/register_form.dart';
 import 'package:flutter_starterkit_firebase/core/listing_service.dart';
+import 'package:flutter_starterkit_firebase/listing/add_item/bloc/additem_bloc.dart';
 import 'package:flutter_starterkit_firebase/listing/widgets/listing.dart';
 import 'package:flutter_starterkit_firebase/listing/bloc/bloc.dart';
 import 'package:flutter_starterkit_firebase/listing/detail/detail_screen.dart';
@@ -17,6 +18,7 @@ import 'authentication/authentication_bloc/authentication_bloc.dart';
 import 'authentication/onboarding/onboarding_page.dart';
 import 'core/auth_service.dart';
 import 'core/navigation_service.dart';
+import 'listing/add_item/add_item_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,8 +41,17 @@ class DI extends StatelessWidget {
       child: MultiBlocProvider(
         providers: [
           BlocProvider<AuthenticationBloc>(
+            create: (_) => AuthenticationBloc(service: AuthService())..add(AppStarted()),
+          ),
+          BlocProvider<ListingBloc>(
             create: (context) {
-              return AuthenticationBloc(service: context.read<AuthService>())..add(AppStarted());
+              final _serviceUtilityProvider = context.watch<ServiceUtilityProvider>();
+              final authService = context.watch<AuthService>();
+              return ListingBloc(
+                service: ListingService(),
+                serviceProvider: _serviceUtilityProvider,
+                authService: authService,
+              )..add(InActiveSearch());
             },
           ),
           BlocProvider<ListingBloc>(create: (context) {
@@ -50,6 +61,10 @@ class DI extends StatelessWidget {
               authService: context.read<AuthService>(),
             );
           }),
+          BlocProvider<AdditemBloc>(create: (context) {
+            return AdditemBloc(
+                addItemService: ListingService(), utilityProvider: context.read<ServiceUtilityProvider>());
+          })
         ],
         child: MyApp(),
       ),
@@ -91,6 +106,7 @@ class MyApp extends StatelessWidget {
         '/forgot_password': (BuildContext context) => ForgotPasswordScreen(),
         '/dashboard': (BuildContext context) => LisitingPage(),
         '/dashboard/detail': (BuildContext context) => DetailScreen(),
+        '/dashboard/add/item': (BuildContext context) => AddItemPage(),
       },
     );
   }
