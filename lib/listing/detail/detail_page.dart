@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starterkit_firebase/listing/bloc/bloc.dart';
+
 import 'package:flutter_starterkit_firebase/utils/resources.dart';
 import 'package:flutter_starterkit_firebase/utils/service_utility.dart';
 import 'package:solid_bottom_sheet/solid_bottom_sheet.dart';

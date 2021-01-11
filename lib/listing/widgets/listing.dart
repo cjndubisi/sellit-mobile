@@ -21,9 +21,7 @@ class _LisitingPage extends State<LisitingPage> {
     final NavigationService _navigationService = context.watch<NavigationService>();
     return BlocConsumer<ListingBloc, ListingState>(
       listener: (contex, state) {
-        if (state is LogOut) {
-          _navigationService.setRootRoute('/login');
-        } else if (state is NavigateToDetail) {
+        if (state is NavigateToDetail) {
           _navigationService.navigateTo('/dashboard/detail');
         }
       },
@@ -71,6 +69,8 @@ class _LisitingPage extends State<LisitingPage> {
 
   AppBar _buildAppBar(BuildContext context, ListingState state) {
     final ListingBloc _listingBloc = context.watch<ListingBloc>();
+    final NavigationService _navigationService = context.watch<NavigationService>();
+
     if (state is SearchingState) {
       return AppBar(
         leading: IconButton(
@@ -112,7 +112,7 @@ class _LisitingPage extends State<LisitingPage> {
         ),
         IconButton(
           icon: Icon(Icons.logout),
-          onPressed: () async => _listingBloc.add(LogOutEvent()),
+          onPressed: () async => _navigationService.setRootRoute('/login'),
         ),
       ],
     );

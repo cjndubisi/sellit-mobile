@@ -48,6 +48,12 @@ class FirebaseListingService with FirebaseServices implements ItemService {
     );
   }
 
+  Stream<List<ItemEntity>> getItemsByStateStream(String state) => firestoreService.collectionStream(
+        path: 'items',
+        builder: (data, _) => ItemEntity.fromMap(data),
+        queryBuilder: (query) => query.where('state', isEqualTo: state),
+      );
+
   // ItemService
   @override
   Future<void> addItem(ItemEntity item, List<Asset> images) async {
@@ -65,4 +71,7 @@ class FirebaseListingService with FirebaseServices implements ItemService {
 
   @override
   Future<List<ItemEntity>> getItems() => itemStream.last;
+
+  @override
+  Future<List<ItemEntity>> getItemsByState(String state) => getItemsByStateStream(state).last;
 }

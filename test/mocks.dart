@@ -1,3 +1,7 @@
+import 'package:flutter_starterkit_firebase/core/item_service.dart';
+import 'package:mockito/mockito.dart';
+import 'package:flutter_starterkit_firebase/utils/service_utility.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -6,7 +10,6 @@ import 'package:flutter_starterkit_firebase/core/firestorage_service.dart';
 import 'package:flutter_starterkit_firebase/core/firestore_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:mockito/mockito.dart';
 import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
 
 typedef Callback = Function(MethodCall call);
@@ -107,3 +110,7 @@ class GoogleUserMock extends Mock implements GoogleSignInAccount, UserCredential
   @override
   String get email => 'adex9ja2@gmail.com';
 }
+
+class ServiceUtilityProviderMock extends Mock implements ServiceUtilityProvider {}
+
+class ItemServiceMock extends Mock implements ItemService {}

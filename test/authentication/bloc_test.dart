@@ -1,12 +1,19 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_starterkit_firebase/authentication/authentication_bloc/authentication_bloc.dart';
 import 'package:flutter_starterkit_firebase/core/auth_service.dart';
+import 'package:flutter_starterkit_firebase/core/listing_service.dart';
 import 'package:flutter_starterkit_firebase/model/user.dart';
+import 'package:flutter_starterkit_firebase/core/profile_service.dart';
+import 'package:flutter_starterkit_firebase/listing/profile/bloc/profile_bloc.dart';
+import 'package:flutter_starterkit_firebase/model/item_entity.dart';
 import 'package:flutter_starterkit_firebase/utils/constants.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../mocks/firebase_auth_mock.dart';
+import '../mocks.dart';
 
 final FirebaseAuthMock firebaseAuthMock = FirebaseAuthMock();
 final GoogleSignInMock googleSignInMock = GoogleSignInMock();
@@ -17,7 +24,12 @@ final GoogleUserMock googleUserMock = GoogleUserMock();
 final AuthService auth = AuthService();
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
+  authBlocTest();
+  profileBlocTest();
+}
+
+void authBlocTest() {
   AuthenticationBloc authenticationBloc;
   AuthService _authService;
   FirebaseAuthServiceMock firebaseServiceMock;
@@ -27,10 +39,6 @@ void main() {
     _authService = AuthService.fromFirebaseService(firebaseServiceMock);
     authenticationBloc = AuthenticationBloc(service: _authService);
     SharedPreferences.setMockInitialValues(<String, dynamic>{Constants.FIRST_TIME: false});
-  });
-
-  tearDown(() {
-    authenticationBloc?.close();
   });
 
   group('auth bloc test', () {
@@ -110,4 +118,27 @@ void main() {
       authenticationBloc.add(LoggedOut());
     });
   });
+
+  tearDown(() {
+    authenticationBloc?.close();
+  });
+}
+
+void profileBlocTest() {
+  ProfileBloc profileBloc;
+  ProfileService _profileService;
+  StreamController<List<ItemEntity>> streamController;
+  setUp(() {
+    streamController = StreamController<List<ItemEntity>>.broadcast();
+    _profileService = ProfileService(
+      ListingService(
+        firebaseStorageService: FirebaseStorageServiceMock(),
+        firestoreService: FirestoreServiceMock(),
+      ),
+    );
+    profileBloc = ProfileBloc(service: _profileService);
+    SharedPreferences.setMockInitialValues(<String, dynamic>{Constants.FIRST_TIME: false});
+  });
+
+  tearDown(() => profileBloc.close());
 }

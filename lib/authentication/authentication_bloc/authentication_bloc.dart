@@ -45,7 +45,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     final bool isFirstTime = await Repository.getInstance().isFirstTime();
     if (isFirstTime) {
       yield UnInitialized();
-      return;
     }
     final User user = _service.getUser();
 

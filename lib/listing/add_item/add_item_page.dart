@@ -7,6 +7,7 @@ import 'package:flutter_starterkit_firebase/core/navigation_service.dart';
 import 'package:flutter_starterkit_firebase/listing/add_item/bloc/additem_bloc.dart';
 import 'package:flutter_starterkit_firebase/model/item_entity.dart';
 import 'package:flutter_starterkit_firebase/model/user.dart';
+import 'package:flutter_starterkit_firebase/utils/constants.dart';
 import 'package:flutter_starterkit_firebase/utils/resources.dart';
 import 'package:flutter_starterkit_firebase/utils/utility.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
