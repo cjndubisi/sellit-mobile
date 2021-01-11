@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter_starterkit_firebase/authentication/authentication_bloc/authentication_bloc.dart';
 import 'package:flutter_starterkit_firebase/core/navigation_service.dart';
 import 'package:flutter_starterkit_firebase/listing/bloc/bloc.dart';
 import 'package:flutter_starterkit_firebase/listing/widgets/widget.dart';
@@ -70,6 +71,7 @@ class _LisitingPage extends State<LisitingPage> {
   AppBar _buildAppBar(BuildContext context, ListingState state) {
     final ListingBloc _listingBloc = context.watch<ListingBloc>();
     final NavigationService _navigationService = context.watch<NavigationService>();
+    final AuthenticationBloc _authBloc = context.watch<AuthenticationBloc>();
 
     if (state is SearchingState) {
       return AppBar(
@@ -112,7 +114,10 @@ class _LisitingPage extends State<LisitingPage> {
         ),
         IconButton(
           icon: Icon(Icons.logout),
-          onPressed: () async => _navigationService.setRootRoute('/login'),
+          onPressed: () async {
+            _authBloc.add(LogOutEvent());
+            await _navigationService.setRootRoute('/login');
+          },
         ),
       ],
     );

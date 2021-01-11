@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starterkit_firebase/authentication/authentication_bloc/authentication_bloc.dart';
+import 'package:flutter_starterkit_firebase/authentication/form_widgets.dart';
 import 'package:flutter_starterkit_firebase/core/navigation_service.dart';
 import 'package:flutter_starterkit_firebase/utils/resources.dart';
+import 'package:flutter_starterkit_firebase/utils/utility.dart';
 
 class LoginForm extends StatefulWidget {
   @override
@@ -10,12 +12,8 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-  String _email;
-
-  String _password;
-
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
-
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   AuthenticationBloc _loginBloc;
 
   @override
@@ -24,11 +22,12 @@ class _LoginFormState extends State<LoginForm> {
     _loginBloc = BlocProvider.of<AuthenticationBloc>(context);
   }
 
-  void attemptLogin() {
+  void attemptLogin(LoginFormState state) {
     final FormState form = _form.currentState;
     if (form.validate()) {
+      print('email: $state.email,password:$state.password');
       form.save();
-      _loginBloc.add(LoginWithEmailPasswordPressed(email: _email, password: _password));
+      _loginBloc.add(LoginWithEmailPasswordPressed(email: state.email, password: state.password));
     }
   }
 
@@ -42,21 +41,17 @@ class _LoginFormState extends State<LoginForm> {
           _navigationService.setRootRoute('/dashboard');
         }
 
-        if (state is Failed) {
-          Scaffold.of(context).showSnackBar(SnackBar(
-            content: Center(
-              child: Column(
-                children: const [
-                  Text('Login Error'),
-                  Text('Something went wrong please try again'),
-                ],
-              ),
-            ),
+        if (state is LoginFormState && state.formError.isNotEmpty) {
+          _scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text(state.formError),
           ));
         }
       },
       builder: (context, state) {
+        final LoginFormState formState = tryCast<LoginFormState>(state) ?? LoginFormState();
+
         return Scaffold(
+          key: _scaffoldKey,
           appBar: AppBar(
             title: const Text(
               'Sellit',
@@ -81,23 +76,24 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                     Sizing.small,
                     Text(
-                      "Enter your email address and password to proceed. If you don't have an account, kindly register now",
+                      '''Enter your email address and password to proceed. 
+                      If you don't have an account, kindly register now''',
                       style: style.copyWith(fontSize: 11, color: Colors.grey),
                     ),
                     Sizing.fab,
-                    TextFormField(
-                      decoration: const InputDecoration(hintText: 'Enter email address', prefixIcon: Icon(Icons.mail)),
-                      onChanged: (String value) => _email = value.trim(),
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (String value) => value.isEmpty ? 'Email address can\'t be empty' : null,
-                    ),
+                    EmailInput(action: (value) {
+                      context.read<AuthenticationBloc>().add(
+                            LoginFormValueChangedEvent(email: value, password: formState.password),
+                          );
+                    }),
                     Sizing.fab,
-                    TextFormField(
-                      decoration: const InputDecoration(hintText: 'Enter password', prefixIcon: Icon(Icons.lock)),
-                      onSaved: (String value) => _password = value.trim(),
-                      keyboardType: TextInputType.text,
-                      obscureText: true,
-                      validator: (String value) => value.isEmpty ? 'Password can\'t be empty' : null,
+                    CustomTextField(
+                      value: tryCast<LoginFormState>(state)?.password ?? '',
+                      hintTextValue: 'Password',
+                      action: (value) => context.read<AuthenticationBloc>().add(
+                            LoginFormValueChangedEvent(email: formState.email, password: value),
+                          ),
+                      icon: Icon(Icons.lock),
                     ),
                     Sizing.fab,
                     FlatButton(
@@ -107,20 +103,7 @@ class _LoginFormState extends State<LoginForm> {
                           style: style.copyWith(decoration: TextDecoration.underline, color: ColorPalette.blue),
                         )),
                     Sizing.fab,
-                    Material(
-                      elevation: 5.0,
-                      borderRadius: BorderRadius.circular(10.0),
-                      color: ColorPalette.primary,
-                      child: MaterialButton(
-                        minWidth: MediaQuery.of(context).size.width,
-                        onPressed: () => attemptLogin(),
-                        child: Text(
-                          'Login',
-                          textAlign: TextAlign.center,
-                          style: style.copyWith(color: Colors.white, fontSize: 14),
-                        ),
-                      ),
-                    ),
+                    SubmitButton(action: () => attemptLogin(formState), label: 'login'),
                     Sizing.fab,
                     Center(
                       child: Row(

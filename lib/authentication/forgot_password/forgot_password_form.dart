@@ -48,7 +48,7 @@ class _ForgotPasswordForm extends State<ForgotPasswordForm> {
         minWidth: MediaQuery.of(context).size.width,
         onPressed: () => attemptForgotPassword(),
         child: Text(
-          'Register',
+          'Reset Password',
           textAlign: TextAlign.center,
           style: style.copyWith(color: Colors.white, fontSize: 14),
         ),
@@ -60,30 +60,33 @@ class _ForgotPasswordForm extends State<ForgotPasswordForm> {
           await _utilityProvider.startLoading(context);
         } else if (state is Successful) {
           _utilityProvider.loadingSuccessful(null);
-        } else if (state is Failed) {
-          await _utilityProvider.loadingFailed(state.message);
+        } else if (state is LoginFormState) {
+          await _utilityProvider.loadingFailed(state.formError);
         }
       },
-      child: SingleChildScrollView(
-        child: Container(
-          alignment: Alignment.topLeft,
-          padding: const EdgeInsets.all(20),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  'Email Address',
-                  style: style.copyWith(fontWeight: FontWeight.bold),
-                ),
-                Sizing.medium,
-                emailText,
-                Sizing.medium,
-                Sizing.fab,
-                forgotPassBtn
-              ],
+      child: Scaffold(
+        appBar: AppBar(),
+        body: SingleChildScrollView(
+          child: Container(
+            alignment: Alignment.topLeft,
+            padding: const EdgeInsets.all(20),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    'Email Address',
+                    style: style.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  Sizing.medium,
+                  emailText,
+                  Sizing.medium,
+                  Sizing.fab,
+                  forgotPassBtn
+                ],
+              ),
             ),
           ),
         ),
