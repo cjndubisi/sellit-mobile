@@ -1,39 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_starterkit_firebase/authentication/authentication_bloc/authentication_bloc.dart';
 import 'package:flutter_starterkit_firebase/utils/resources.dart';
-import 'package:flutter_starterkit_firebase/utils/utility.dart';
-
-class EmailInput extends StatelessWidget {
-  const EmailInput({@required this.action});
-  final Function(String) action;
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
-      buildWhen: (prevState, state) =>
-          prevState is LoginFormState && state is LoginFormState && state.email != prevState.email,
-      builder: (context, state) {
-        final LoginFormState formState = tryCast<LoginFormState>(state) ?? LoginFormState();
-
-        return TextFormField(
-          initialValue: formState.email,
-          decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.email),
-              labelText: 'Email',
-              helperText: formState.isValidEmail ? 'Looks Good' : 'A complete, valid email e.g. joe@gmail.com',
-              errorText:
-                  formState.emailError //ormState.isValidEmail ? 'Please ensure the email entered is valid' : null,
-              ),
-          keyboardType: TextInputType.emailAddress,
-          onChanged: (value) {
-            action(value);
-          },
-          textInputAction: TextInputAction.next,
-        );
-      },
-    );
-  }
-}
 
 class SubmitButton extends StatelessWidget {
   const SubmitButton({@required this.action, @required this.label});
@@ -59,11 +25,22 @@ class SubmitButton extends StatelessWidget {
 }
 
 class CustomTextField extends StatelessWidget {
-  const CustomTextField({@required this.value, @required this.action, @required this.hintTextValue, this.icon});
+  const CustomTextField({
+    @required this.value,
+    @required this.action,
+    @required this.helpTextValue,
+    this.icon,
+    this.hintTextValue,
+    this.obscureText = true,
+    this.errorText,
+  });
   final String value;
   final Function(String) action;
+  final String helpTextValue;
   final String hintTextValue;
   final Icon icon;
+  final bool obscureText;
+  final String errorText;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -71,51 +48,14 @@ class CustomTextField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hintTextValue,
         prefixIcon: icon,
+        errorText: errorText,
+        border: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.green),
+        ),
       ),
       keyboardType: TextInputType.text,
       obscureText: true,
       onChanged: (value) => action(value),
-    );
-  }
-}
-
-class PasswordInput extends StatelessWidget {
-  const PasswordInput({@required this.action});
-  final Function(String) action;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
-      buildWhen: (prevState, state) =>
-          prevState is LoginFormState && state is LoginFormState && state.password != prevState.password,
-      builder: (context, state) {
-        if (state is! LoginFormState) {
-          return null;
-        }
-
-        final LoginFormState formState = state as LoginFormState;
-        return TextFormField(
-          initialValue: formState.password,
-          keyboardType: TextInputType.text,
-          decoration: InputDecoration(
-            hintStyle: style,
-            prefixIcon: const Icon(Icons.lock),
-            helperText: formState.isValidPassword
-                ? 'Looks Good'
-                : '''Password should be at least 8 characters with at least one letter and number''',
-            helperMaxLines: 2,
-            labelText: 'Password',
-            errorMaxLines: 2,
-            errorText: formState
-                .passwordError, //? '''Password must be at least 8 characters and contain at least one letter and number''' //: null,
-          ),
-          obscureText: true,
-          onChanged: (value) {
-            action(value);
-          },
-          textInputAction: TextInputAction.done,
-        );
-      },
     );
   }
 }

@@ -72,38 +72,82 @@ class _LoginFormState extends State<LoginForm> {
                     Sizing.fab,
                     Text(
                       'Login to continue',
-                      style: style.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: style.copyWith(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Sizing.small,
                     Text(
                       '''Enter your email address and password to proceed. 
                       If you don't have an account, kindly register now''',
-                      style: style.copyWith(fontSize: 11, color: Colors.grey),
+                      style: style.copyWith(
+                        fontSize: 11,
+                        color: Colors.grey,
+                      ),
                     ),
                     Sizing.fab,
-                    EmailInput(action: (value) {
-                      context.read<AuthenticationBloc>().add(
-                            LoginFormValueChangedEvent(email: value, password: formState.password),
-                          );
-                    }),
-                    Sizing.fab,
+                    Text(
+                      'Email',
+                      style: style.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     CustomTextField(
-                      value: tryCast<LoginFormState>(state)?.password ?? '',
-                      hintTextValue: 'Password',
+                      obscureText: false,
+                      icon: Icon(
+                        Icons.email,
+                      ),
+                      value: tryCast<LoginFormState>(state)?.email ?? '',
                       action: (value) => context.read<AuthenticationBloc>().add(
-                            LoginFormValueChangedEvent(email: formState.email, password: value),
+                            LoginFormValueChangedEvent(email: value.trim(), password: formState.password),
                           ),
+                      helpTextValue: 'A complete, valid email e.g. joe@gmail.com',
+                      hintTextValue: 'Email',
+                      errorText:
+                          tryCast<LoginFormState>(state).email.isEmpty ? null : (state as LoginFormState).emailError,
+                    ),
+                    Sizing.fab,
+                    Text(
+                      'Password',
+                      style: style.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    CustomTextField(
+                      obscureText: true,
                       icon: Icon(Icons.lock),
+                      value: tryCast<LoginFormState>(state)?.password ?? '',
+                      action: (value) => context.read<AuthenticationBloc>().add(
+                            LoginFormValueChangedEvent(
+                              email: formState.email,
+                              password: value.trim(),
+                            ),
+                          ),
+                      helpTextValue: '''Password should be at least 8 characters with at least one letter and number''',
+                      hintTextValue: 'Password',
+                      errorText: tryCast<LoginFormState>(state).password.isEmpty
+                          ? null
+                          : (state as LoginFormState).passwordError,
                     ),
                     Sizing.fab,
                     FlatButton(
-                        onPressed: () => _navigationService.navigateTo('/forgot_password'),
-                        child: Text(
-                          'Forgot password?',
-                          style: style.copyWith(decoration: TextDecoration.underline, color: ColorPalette.blue),
-                        )),
+                      onPressed: () => _navigationService.navigateTo('/forgot_password'),
+                      child: Text(
+                        'Forgot password?',
+                        style: style.copyWith(
+                          decoration: TextDecoration.underline,
+                          color: ColorPalette.blue,
+                        ),
+                      ),
+                    ),
                     Sizing.fab,
-                    SubmitButton(action: () => attemptLogin(formState), label: 'login'),
+                    SubmitButton(
+                      action: () => attemptLogin(
+                        formState,
+                      ),
+                      label: 'login',
+                    ),
                     Sizing.fab,
                     Center(
                       child: Row(
@@ -111,15 +155,20 @@ class _LoginFormState extends State<LoginForm> {
                         children: <Widget>[
                           Text(
                             "Don't have an account?",
-                            style: style.copyWith(color: Colors.grey),
+                            style: style.copyWith(
+                              color: Colors.grey,
+                            ),
                           ),
                           FlatButton(
-                              onPressed: () => _navigationService.navigateTo('/register'),
-                              child: Text(
-                                'Register',
-                                style:
-                                    style.copyWith(decoration: TextDecoration.underline, color: ColorPalette.primary),
-                              ))
+                            onPressed: () => _navigationService.navigateTo('/register'),
+                            child: Text(
+                              'Register',
+                              style: style.copyWith(
+                                decoration: TextDecoration.underline,
+                                color: ColorPalette.primary,
+                              ),
+                            ),
+                          )
                         ],
                       ),
                     ),
@@ -139,7 +188,9 @@ class _LoginFormState extends State<LoginForm> {
                           child: Container(
                             height: 45.0,
                             child: GestureDetector(
-                              onTap: () => _loginBloc.add(LoginWithFacebookPressed()),
+                              onTap: () => _loginBloc.add(
+                                LoginWithFacebookPressed(),
+                              ),
                               child: Container(
                                 decoration: BoxDecoration(
                                   border: Border.all(
@@ -156,7 +207,10 @@ class _LoginFormState extends State<LoginForm> {
                                     Center(
                                       child: Text(
                                         'Facebook',
-                                        style: style.copyWith(color: Colors.blueAccent, fontWeight: FontWeight.bold),
+                                        style: style.copyWith(
+                                          color: Colors.blueAccent,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     )
                                   ],
@@ -171,7 +225,9 @@ class _LoginFormState extends State<LoginForm> {
                           child: Container(
                             height: 45.0,
                             child: GestureDetector(
-                              onTap: () => _loginBloc.add(LoginWithGooglePressed()),
+                              onTap: () => _loginBloc.add(
+                                LoginWithGooglePressed(),
+                              ),
                               child: Container(
                                 decoration: BoxDecoration(
                                   border: Border.all(
@@ -188,7 +244,10 @@ class _LoginFormState extends State<LoginForm> {
                                     Center(
                                       child: Text(
                                         'Google+',
-                                        style: style.copyWith(color: Colors.redAccent, fontWeight: FontWeight.bold),
+                                        style: style.copyWith(
+                                          color: Colors.redAccent,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     )
                                   ],
