@@ -31,7 +31,7 @@ class _RegisterForm extends State<RegisterForm> {
   Widget build(BuildContext context) {
     final NavigationService _navService = context.watch<NavigationService>();
 
-    return BlocConsumer<AuthenticationBloc, AuthenticationState>(
+    return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (BuildContext context, AuthenticationState state) async {
         if (state is Authenticated) {
           _navService.setRootRoute('/dashboard');
@@ -44,7 +44,7 @@ class _RegisterForm extends State<RegisterForm> {
           );
         }
       },
-      builder: (context, state) => Scaffold(
+      child: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
           title: const Text('Registration'),
@@ -68,16 +68,14 @@ class _RegisterForm extends State<RegisterForm> {
                   CustomTextField(
                     obscureText: false,
                     icon: Icon(Icons.email),
-                    value: tryCast<LoginFormState>(state)?.email ?? '',
+                    value: formState?.email ?? '',
                     action: (value) => context
                         .read<AuthenticationBloc>()
                         .add(LoginFormValueChangedEvent(email: value.trim(), password: formState.password)),
                     helpTextValue: 'A complete, valid email e.g. joe@gmail.com',
                     hintTextValue: 'Email',
-                    errorText:
-                        (state as LoginFormState).emailError.isEmpty ? null : (state as LoginFormState).emailError,
+                    errorText: formState.emailError.isEmpty ? null : formState.emailError,
                   ),
-
                   Sizing.medium,
                   Text(
                     'Phone Number',
@@ -85,7 +83,7 @@ class _RegisterForm extends State<RegisterForm> {
                   ),
                   Sizing.small,
                   CustomTextField(
-                    value: '',
+                    value: formState.phoneNumber,
                     action: (value) => context.read<AuthenticationBloc>().add(RegisterFormValueChangedEvent(
                           password: formState?.password ?? '',
                           email: formState?.email ?? '',
@@ -120,7 +118,7 @@ class _RegisterForm extends State<RegisterForm> {
                   CustomTextField(
                     obscureText: true,
                     icon: Icon(Icons.lock),
-                    value: tryCast<LoginFormState>(state)?.password ?? '',
+                    value: formState?.password ?? '',
                     action: (value) => context
                         .read<AuthenticationBloc>()
                         .add(LoginFormValueChangedEvent(email: value.trim(), password: formState.password)),
