@@ -65,16 +65,17 @@ class _RegisterForm extends State<RegisterForm> {
                   ),
                   Sizing.small,
                   // Email textfield
-                  EmailInput(
-                    action: (value) {
-                      context.read<AuthenticationBloc>().add(RegisterFormValueChangedEvent(
-                            email: value.trim(),
-                            password: formState?.phoneNumber ?? '',
-                            phoneNumber: formState.phoneNumber,
-                          ));
-                    },
+                  CustomTextField(
+                    obscureText: false,
+                    icon: Icon(Icons.email),
+                    value: formState?.email ?? '',
+                    action: (value) => context
+                        .read<AuthenticationBloc>()
+                        .add(LoginFormValueChangedEvent(email: value.trim(), password: formState.password)),
+                    helpTextValue: 'A complete, valid email e.g. joe@gmail.com',
+                    hintTextValue: 'Email',
+                    errorText: formState.emailError.isEmpty ? null : formState.emailError,
                   ),
-
                   Sizing.medium,
                   Text(
                     'Phone Number',
@@ -82,13 +83,14 @@ class _RegisterForm extends State<RegisterForm> {
                   ),
                   Sizing.small,
                   CustomTextField(
-                    value: '',
+                    value: formState.phoneNumber,
                     action: (value) => context.read<AuthenticationBloc>().add(RegisterFormValueChangedEvent(
                           password: formState?.password ?? '',
                           email: formState?.email ?? '',
                           phoneNumber: value.trim(),
                         )),
                     hintTextValue: '',
+                    helpTextValue: 'email',
                   ),
 
                   Sizing.medium,
@@ -98,12 +100,14 @@ class _RegisterForm extends State<RegisterForm> {
                   ),
                   Sizing.small,
                   CustomTextField(
-                      hintTextValue: 'Name',
-                      value: _fullName,
-                      action: (value) {
-                        _fullName = value.trim();
-                      },
-                      icon: Icon(Icons.portrait_rounded)),
+                    hintTextValue: 'Name',
+                    value: _fullName,
+                    action: (value) {
+                      _fullName = value.trim();
+                    },
+                    icon: Icon(Icons.portrait_rounded),
+                    helpTextValue: 'full name',
+                  ),
 
                   Sizing.fab,
                   Text(
@@ -111,12 +115,15 @@ class _RegisterForm extends State<RegisterForm> {
                     style: style.copyWith(fontWeight: FontWeight.bold),
                   ),
                   Sizing.small,
-                  PasswordInput(
-                    action: (value) => context.read<AuthenticationBloc>().add(RegisterFormValueChangedEvent(
-                          password: value.trim(),
-                          email: formState?.email ?? '',
-                          phoneNumber: formState.phoneNumber,
-                        )),
+                  CustomTextField(
+                    obscureText: true,
+                    icon: Icon(Icons.lock),
+                    value: formState?.password ?? '',
+                    action: (value) => context
+                        .read<AuthenticationBloc>()
+                        .add(LoginFormValueChangedEvent(email: value.trim(), password: formState.password)),
+                    helpTextValue: '''Password should be at least 8 characters with at least one letter and number''',
+                    hintTextValue: 'Password',
                   ),
                   Sizing.fab,
                   SubmitButton(action: attemptRegister, label: 'register')
