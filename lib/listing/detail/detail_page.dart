@@ -36,9 +36,9 @@ class DetailPage extends StatelessWidget {
       ),
       options: CarouselOptions(
         height: 200,
-        enableInfiniteScroll: true,
+        enableInfiniteScroll: false,
         enlargeCenterPage: false,
-        autoPlay: true,
+        autoPlay: false,
       ),
     );
 
